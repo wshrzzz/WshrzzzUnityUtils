@@ -1,2 +1,1 @@
-WshrzzzUnityUtils
-=================
+It contains some unity util scripts.
