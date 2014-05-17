@@ -303,6 +303,7 @@ namespace Wshrzzz.UnityUtil
                 default:
                     break;
             }
+            yield return new WaitForEndOfFrame();
             IsTweening = false;
         }
 
