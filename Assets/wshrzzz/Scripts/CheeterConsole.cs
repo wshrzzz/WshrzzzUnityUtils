@@ -5,12 +5,17 @@ using System.Collections.Generic;
 namespace Wshrzzz.UnityUtil
 {
     /// <summary>
+    /// -------------------------------------------
+    /// -------------------------------------------
+    /// ---------------Version 2.0.0---------------
+    /// --------Not downward compatibility.--------
+    /// -------------------------------------------
+    /// -------------------------------------------
     /// Cheeter console. Invisible input and activate cheeter.
     /// </summary>
     public class CheeterConsole : MonoBehaviour
     {
-        public delegate void CheetDelegate(string cheeterName);
-        public CheetDelegate OnCheet;
+        public delegate void CheetDelegate();
 
         private string CheeterInput { get; set; }
 
@@ -29,87 +34,111 @@ namespace Wshrzzz.UnityUtil
                     if (CheeterHash.ContainsKey(str))
                     {
                         CheeterInput = "";
+                        (HandlerHash[str] as CheetDelegate)();
                         Debug.Log("On cheet [" +  str + "].");
-                        if (OnCheet != null)
-                        {
-                            OnCheet(str);
-                        }
                     }
                 }
             }
         }
 
         private static Hashtable CheeterHash { get; set; }
+        private static Hashtable HandlerHash { get; set; }
         private static int LonggestCheeterLength { get; set; }
 
         /// <summary>
         /// Add a cheeter. If something wrong, it will give some warning.
         /// </summary>
         /// <param name="cheeterName">Cheeter name.</param>
+        /// <param name="handler">When this cheeter works, it will call the handler.</param>
         /// <returns>Is success?</returns>
-        public static bool AddCheeter(string cheeterName)
+        public static bool AddCheeter(string cheeterName, CheetDelegate handler)
         {
-            if (CheeterHash == null)
+            if (CheeterConsole.GetInstance())
             {
-                CheeterHash = new Hashtable();
-            }
-            if (cheeterName.Length > 30 || cheeterName.Length < 5)
-            {
-                cheeterName = cheeterName.Substring(0, 30);
-                Debug.LogWarning("Cheeter name is limited in 5-30 chars.");
-            }
-            if (!CheeterHash.ContainsKey(cheeterName))
-            {
-                CheeterHash.Add(cheeterName, cheeterName.Length);
-                if (cheeterName.Length > LonggestCheeterLength)
+                if (CheeterHash == null)
                 {
-                    LonggestCheeterLength = cheeterName.Length;
+                    CheeterHash = new Hashtable();
                 }
-                Debug.Log("Add cheeter [" + cheeterName + "].");
-                return true;
+                if (HandlerHash == null)
+                {
+                    HandlerHash = new Hashtable();
+                }
+                if (cheeterName.Length > 30 || cheeterName.Length < 5)
+                {
+                    cheeterName = cheeterName.Substring(0, 30);
+                    Debug.LogWarning("Cheeter name is limited in 5-30 chars.");
+                }
+                if (!CheeterHash.ContainsKey(cheeterName))
+                {
+                    CheeterHash.Add(cheeterName, cheeterName.Length);
+                    if (cheeterName.Length > LonggestCheeterLength)
+                    {
+                        LonggestCheeterLength = cheeterName.Length;
+                    }
+                    HandlerHash.Add(cheeterName, handler);
+                    Debug.Log("Add new cheeter [" + cheeterName + "].");
+                    return true;
+                }
+                else
+                {
+                    CheetDelegate newHandler = HandlerHash[cheeterName] as CheetDelegate;
+                    newHandler += handler;
+                    HandlerHash[cheeterName] = newHandler;
+                    Debug.Log("Expand exist cheeter [" + cheeterName + "].");
+                    return true;
+                }
             }
             else
             {
-                Debug.Log("Already exist cheeter [" + cheeterName + "].");
                 return false;
             }
         }
 
         /// <summary>
         /// Remove a cheeter. If something wrong, it will give some warning.
+        /// Pay attention, it remove all handlers under this cheeter called [cheeterName].
         /// </summary>
         /// <param name="cheeterName">Cheeter name.</param>
         /// <returns>Is success?</returns>
         public static bool RemoveCheeter(string cheeterName)
         {
-            if (CheeterHash == null)
+            if (CheeterConsole.GetInstance())
             {
-                CheeterHash = new Hashtable();
-                Debug.LogWarning("There isn't a cheeter.");
-                return false;
-            }
-            if (CheeterHash.ContainsKey(cheeterName))
-            {
-                CheeterHash.Remove(cheeterName);
-                Debug.Log("Remove cheeter [" + cheeterName + "].");
-
-                if (cheeterName.Length == LonggestCheeterLength)
+                if (CheeterHash == null && HandlerHash == null)
                 {
-                    for (int length = cheeterName.Length; length >= 5; length--)
-                    {
-                        if (CheeterHash.ContainsValue(length))
-                        {
-                            LonggestCheeterLength = length;
-                            return true;
-                        }
-                    }
-                    LonggestCheeterLength = -1;
+                    CheeterHash = new Hashtable();
+                    HandlerHash = new Hashtable();
+                    Debug.LogWarning("There isn't a cheeter.");
+                    return false;
                 }
-                return true;
+                if (CheeterHash.ContainsKey(cheeterName))
+                {
+                    CheeterHash.Remove(cheeterName);
+                    HandlerHash.Remove(cheeterName);
+                    Debug.Log("Remove cheeter [" + cheeterName + "].");
+
+                    if (cheeterName.Length == LonggestCheeterLength)
+                    {
+                        for (int length = cheeterName.Length; length >= 5; length--)
+                        {
+                            if (CheeterHash.ContainsValue(length))
+                            {
+                                LonggestCheeterLength = length;
+                                return true;
+                            }
+                        }
+                        LonggestCheeterLength = -1;
+                    }
+                    return true;
+                }
+                else
+                {
+                    Debug.LogWarning("Cheeter [" + cheeterName + "] isn't exist.");
+                    return false;
+                }
             }
             else
             {
-                Debug.LogWarning("Cheeter [" + cheeterName + "] isn't exist.");
                 return false;
             }
         }

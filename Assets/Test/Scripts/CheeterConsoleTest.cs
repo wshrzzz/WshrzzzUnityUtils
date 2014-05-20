@@ -7,26 +7,22 @@ public class CheeterConsoleTest : MonoBehaviour
 	// Use this for initialization
 	void Start () {
 
-        CheeterConsole.AddCheeter("TestCheeter");
-        CheeterConsole.AddCheeter("showmethemoney");
-        CheeterConsole.AddCheeter("whosyourdaddy");
+        CheeterConsole.AddCheeter("TestCheeter", () => { Debug.Log("TestCheeter is on. 1"); });
 
-        CheeterConsole.GetInstance().OnCheet += (cheeterName) =>
-        {
-            switch (cheeterName)
-            {
-                case "TestCheeter":
-                    CheeterConsole.RemoveCheeter("TestCheeter");
-                    break;
-                case "showmethemoney":
-                    CheeterConsole.RemoveCheeter("showmethemoney");
-                    break;
-                case "whosyourdaddy":
-                    CheeterConsole.RemoveCheeter("whosyourdaddy");
-                    break;
-                default:
-                    break;
-            }
-        };
+        CheeterConsole.AddCheeter("TestCheeter", () => { Debug.Log("TestCheeter is on. 2"); });
+
+        CheeterConsole.AddCheeter("showmethemoney", () => { Debug.Log("showmethemoney is on."); });
+
+        CheeterConsole.AddCheeter("whosyourdaddy", WhosYourDaddy);
+
+        CheeterConsole.AddCheeter("RemoveTest", () => { 
+            CheeterConsole.RemoveCheeter("TestCheeter"); 
+            CheeterConsole.RemoveCheeter("RemoveTest");
+        });
 	}
+
+    void WhosYourDaddy()
+    {
+        Debug.Log("whosyourdaddy is on.");
+    }
 }
