@@ -23,6 +23,8 @@ public class GUILogDisplayTest : MonoBehaviour {
         while (true)
         {
             GUILogDisplay.PrintLog("Log : " + TestCount++);
+            GUILogDisplay.PrintLog(Vector3.one);
+            GUILogDisplay.PrintLog(this);
             yield return new WaitForSeconds(1f);
         }
     }

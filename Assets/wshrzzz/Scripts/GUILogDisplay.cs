@@ -99,8 +99,10 @@ namespace Wshrzzz.UnityUtil
         /// Use this static method to print log on GUI window.
         /// </summary>
         /// <param name="log">Log to print.</param>
-        public static void PrintLog(string log)
+        public static void PrintLog(object log)
         {
+            string logStr = log.ToString();
+            Debug.Log(logStr);
             if (isWork)
             {
                 logCount++;
@@ -108,7 +110,7 @@ namespace Wshrzzz.UnityUtil
                 {
                     logInfo = logInfo.Substring(logInfo.IndexOf("\n") + 1);
                 }
-                logInfo += log + "\n";
+                logInfo += logStr + "\n";
             }
         }
     }
