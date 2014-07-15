@@ -35,7 +35,7 @@ namespace Wshrzzz.UnityUtil
                     {
                         CheeterInput = "";
                         (HandlerHash[str] as CheetDelegate)();
-                        Debug.Log("On cheet [" +  str + "].");
+                        GUILogDisplay.Log("On cheet [" +  str + "].");
                     }
                 }
             }
@@ -66,7 +66,7 @@ namespace Wshrzzz.UnityUtil
                 if (cheeterName.Length > 30 || cheeterName.Length < 5)
                 {
                     cheeterName = cheeterName.Substring(0, 30);
-                    Debug.LogWarning("Cheeter name is limited in 5-30 chars.");
+                    GUILogDisplay.LogWarning("Cheeter name is limited in 5-30 chars.");
                 }
 
                 bool result = false;
@@ -76,7 +76,7 @@ namespace Wshrzzz.UnityUtil
                         CheetDelegate newHandler = HandlerHash[cheeterName] as CheetDelegate;
                         newHandler += handler;
                         HandlerHash[cheeterName] = newHandler;
-                        Debug.Log("Expand exist cheeter [" + cheeterName + "].");
+                        GUILogDisplay.Log("Expand exist cheeter [" + cheeterName + "].");
                         result = true;
                         break;
                     case CheeterNameInfo.DontExsit:
@@ -86,14 +86,14 @@ namespace Wshrzzz.UnityUtil
                             LonggestCheeterLength = cheeterName.Length;
                         }
                         HandlerHash.Add(cheeterName, handler);
-                        Debug.Log("Add new cheeter [" + cheeterName + "].");
+                        GUILogDisplay.Log("Add new cheeter [" + cheeterName + "].");
                         result = true;
                         break;
                     case CheeterNameInfo.NameError:
-                        Debug.Log("Cheeter name [" + cheeterName + "] conflicts with others.");
+                        GUILogDisplay.LogWarning("Cheeter name [" + cheeterName + "] conflicts with others.");
                         break;
                     case CheeterNameInfo.Unknown:
-                        Debug.Log("Unknown error...");
+                        GUILogDisplay.LogError("Unknown error...");
                         break;
                     default:
                         break;
@@ -150,14 +150,14 @@ namespace Wshrzzz.UnityUtil
                 {
                     CheeterHash = new Hashtable();
                     HandlerHash = new Hashtable();
-                    Debug.LogWarning("There isn't a cheeter.");
+                    GUILogDisplay.LogWarning("There isn't a cheeter.");
                     return false;
                 }
                 if (CheeterHash.ContainsKey(cheeterName))
                 {
                     CheeterHash.Remove(cheeterName);
                     HandlerHash.Remove(cheeterName);
-                    Debug.Log("Remove cheeter [" + cheeterName + "].");
+                    GUILogDisplay.Log("Remove cheeter [" + cheeterName + "].");
 
                     if (cheeterName.Length == LonggestCheeterLength)
                     {
@@ -175,7 +175,7 @@ namespace Wshrzzz.UnityUtil
                 }
                 else
                 {
-                    Debug.LogWarning("Cheeter [" + cheeterName + "] isn't exist.");
+                    GUILogDisplay.LogWarning("Cheeter [" + cheeterName + "] isn't exist.");
                     return false;
                 }
             }
