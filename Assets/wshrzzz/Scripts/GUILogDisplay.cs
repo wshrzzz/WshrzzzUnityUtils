@@ -94,9 +94,69 @@ namespace Wshrzzz.UnityUtil
         private static int logCount = 0;
         private static int maxLogNumber = 400;
         private static bool isWork = false;
-        
+
         /// <summary>
         /// Use this static method to print log on GUI window.
+        /// </summary>
+        /// <param name="log">Log to print.</param>
+        public static void Log(object log)
+        {
+            string logStr = log.ToString();
+            Debug.Log(logStr);
+            logStr = "[--Log--] " + logStr;
+            if (isWork)
+            {
+                logCount++;
+                if (logCount > maxLogNumber || logInfo.Length > 10000)
+                {
+                    logInfo = logInfo.Substring(logInfo.IndexOf("\n") + 1);
+                }
+                logInfo += logStr + "\n";
+            }
+        }
+
+        /// <summary>
+        /// Use this static method to print warning on GUI window.
+        /// </summary>
+        /// <param name="log">Warning to print.</param>
+        public static void LogWarning(object log)
+        {
+            string logStr = log.ToString();
+            Debug.LogWarning(logStr);
+            logStr = "[--Warning--] " + logStr;
+            if (isWork)
+            {
+                logCount++;
+                if (logCount > maxLogNumber || logInfo.Length > 10000)
+                {
+                    logInfo = logInfo.Substring(logInfo.IndexOf("\n") + 1);
+                }
+                logInfo += logStr + "\n";
+            }
+        }
+
+        /// <summary>
+        /// Use this static method to print error on GUI window.
+        /// </summary>
+        /// <param name="log">Error to print.</param>
+        public static void LogError(object log)
+        {
+            string logStr = log.ToString();
+            Debug.LogError(logStr);
+            logStr = "[--Error--] " + logStr;
+            if (isWork)
+            {
+                logCount++;
+                if (logCount > maxLogNumber || logInfo.Length > 10000)
+                {
+                    logInfo = logInfo.Substring(logInfo.IndexOf("\n") + 1);
+                }
+                logInfo += logStr + "\n";
+            }
+        }
+
+        /// <summary>
+        /// Deprecate, use Log() instead.
         /// </summary>
         /// <param name="log">Log to print.</param>
         public static void PrintLog(object log)
