@@ -7,7 +7,7 @@ namespace Wshrzzz.UnityUtil
     /// <summary>
     /// -------------------------------------------
     /// -------------------------------------------
-    /// ---------------Version 2.0.0---------------
+    /// -------------Version 2.0.7151--------------
     /// --------Not downward compatibility.--------
     /// -------------------------------------------
     /// -------------------------------------------
@@ -46,7 +46,7 @@ namespace Wshrzzz.UnityUtil
         private static int LonggestCheeterLength { get; set; }
 
         /// <summary>
-        /// Add a cheeter. If something wrong, it will give some warning.
+        /// Add a cheeter. If something wrong, it will give some warnings or errors.
         /// </summary>
         /// <param name="cheeterName">Cheeter name.</param>
         /// <param name="handler">When this cheeter works, it will call the handler.</param>
@@ -68,29 +68,71 @@ namespace Wshrzzz.UnityUtil
                     cheeterName = cheeterName.Substring(0, 30);
                     Debug.LogWarning("Cheeter name is limited in 5-30 chars.");
                 }
-                if (!CheeterHash.ContainsKey(cheeterName))
+
+                bool result = false;
+                switch (CheckCheeterName(cheeterName))
                 {
-                    CheeterHash.Add(cheeterName, cheeterName.Length);
-                    if (cheeterName.Length > LonggestCheeterLength)
-                    {
-                        LonggestCheeterLength = cheeterName.Length;
-                    }
-                    HandlerHash.Add(cheeterName, handler);
-                    Debug.Log("Add new cheeter [" + cheeterName + "].");
-                    return true;
+                    case CheeterNameInfo.Exsit:
+                        CheetDelegate newHandler = HandlerHash[cheeterName] as CheetDelegate;
+                        newHandler += handler;
+                        HandlerHash[cheeterName] = newHandler;
+                        Debug.Log("Expand exist cheeter [" + cheeterName + "].");
+                        result = true;
+                        break;
+                    case CheeterNameInfo.DontExsit:
+                        CheeterHash.Add(cheeterName, cheeterName.Length);
+                        if (cheeterName.Length > LonggestCheeterLength)
+                        {
+                            LonggestCheeterLength = cheeterName.Length;
+                        }
+                        HandlerHash.Add(cheeterName, handler);
+                        Debug.Log("Add new cheeter [" + cheeterName + "].");
+                        result = true;
+                        break;
+                    case CheeterNameInfo.NameError:
+                        Debug.Log("Cheeter name [" + cheeterName + "] conflicts with others.");
+                        break;
+                    case CheeterNameInfo.Unknown:
+                        Debug.Log("Unknown error...");
+                        break;
+                    default:
+                        break;
                 }
-                else
-                {
-                    CheetDelegate newHandler = HandlerHash[cheeterName] as CheetDelegate;
-                    newHandler += handler;
-                    HandlerHash[cheeterName] = newHandler;
-                    Debug.Log("Expand exist cheeter [" + cheeterName + "].");
-                    return true;
-                }
+                return result;
             }
             else
             {
                 return false;
+            }
+        }
+
+        private static CheeterNameInfo CheckCheeterName(string cheeterName)
+        {
+            if (!CheeterHash.ContainsKey(cheeterName))
+            {
+                foreach (DictionaryEntry item in CheeterHash)
+                {
+                    if ((int)item.Value > cheeterName.Length)
+                    {
+                        if ((item.Key as string).Contains(cheeterName))
+                        {
+                            return CheeterNameInfo.NameError;
+                        }
+                    }
+                    else
+                    {
+                        if (cheeterName.Contains(item.Key as string))
+                        {
+                            return CheeterNameInfo.NameError;
+                        }
+                    }
+                }
+
+                return CheeterNameInfo.DontExsit;
+            }
+            else
+            {
+                return CheeterNameInfo.Exsit;
             }
         }
 
@@ -167,6 +209,14 @@ namespace Wshrzzz.UnityUtil
                     return mInstance;
                 }
             }
+        }
+
+        public enum CheeterNameInfo
+        {
+            DontExsit,
+            Exsit,
+            NameError,
+            Unknown
         }
     }
 }

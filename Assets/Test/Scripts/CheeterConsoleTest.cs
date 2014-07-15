@@ -11,6 +11,10 @@ public class CheeterConsoleTest : MonoBehaviour
 
         CheeterConsole.AddCheeter("TestCheeter", () => { Debug.Log("TestCheeter is on. 2"); });
 
+        CheeterConsole.AddCheeter("TestChee", () => { Debug.Log("TestChee is on."); });
+
+        CheeterConsole.AddCheeter("TestCheeterBIGBIG", () => { Debug.Log("TestCheeterBIGBIG is on."); });
+
         CheeterConsole.AddCheeter("showmethemoney", () => { Debug.Log("showmethemoney is on."); });
 
         CheeterConsole.AddCheeter("whosyourdaddy", WhosYourDaddy);
