@@ -3,6 +3,24 @@ using System.Collections;
 
 namespace Wshrzzz.UnityUtil
 {
+    //////////////////////////////////////////////////////////////////////////
+    //
+    //                            TweenBasic 
+    //                        version: 1.0.8221
+    //
+    //////////////////////////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////////////////////////
+    //
+    //                         Release features
+    //  ----------------------------------------------------------------------
+    //  ver1.0.8221: Add tween times option when call the StartTween().
+    //
+    //  ----------------------------------------------------------------------
+    //  ver1.0.0: First version, gives a tween process by different tween types.
+    //
+    //////////////////////////////////////////////////////////////////////////
+
     /// <summary>
     /// A tween basic class, offers some tween actions with params.
     /// </summary>
@@ -87,7 +105,7 @@ namespace Wshrzzz.UnityUtil
         /// Default is true.</param>
         /// <param name="loopSort">3 tween loop type: Once, Loop, PingPong. Default is Once.</param>
         /// <param name="tweenFactor">Tween factor, work with Easy type tween. Bigger factor makes tween change more obviously</param>
-        public void StartTween(TweenType tweenType, float duration, bool forward = true, bool reset = true, LoopType loopType = LoopType.Once, int tweenFactor = 1)
+        public void StartTween(TweenType tweenType, float duration, bool forward = true, bool reset = true, LoopType loopType = LoopType.Once, int tweenFactor = 1, int tweenTimes = -1)
         {
             StopAllCoroutines();
 
@@ -101,10 +119,10 @@ namespace Wshrzzz.UnityUtil
             IsTweening = true;
             TweenCount = 0;
 
-            StartCoroutine(OnTweening(tweenType, tweenFactor, forward, loopType));
+            StartCoroutine(OnTweening(tweenType, tweenFactor, forward, loopType, tweenTimes));
         }
 
-        IEnumerator OnTweening(TweenType tweenSort, int tweenFactor, bool forward, LoopType loopSort)
+        IEnumerator OnTweening(TweenType tweenSort, int tweenFactor, bool forward, LoopType loopSort, int tweenTimes)
         {
             switch (tweenSort)
             {
@@ -119,19 +137,45 @@ namespace Wshrzzz.UnityUtil
                             {
                                 TweenProcess = 1f;
                                 TweenValue = 1f;
+                                TweenCount++;
                                 break;
                             }
                             else if (loopSort == LoopType.Loop)
                             {
-                                TweenProcess = 0f;
+                                if (tweenTimes != -1)
+                                {
+                                    TweenCount++;
+                                    if (TweenCount < tweenTimes)
+                                    {
+                                        TweenProcess = 0f;
+                                    } 
+                                    else
+                                    {
+                                        TweenProcess = 1f;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    TweenProcess = 0f;
+                                    TweenCount++;
+                                }
                             }
                             else if (loopSort == LoopType.PingPong)
                             {
                                 IdentifyDelta = -IdentifyDelta;
                                 TweenProcess = 1f;
                                 forward = !forward;
+                                TweenCount++;
+
+                                if (tweenTimes != -1)
+                                {
+                                    if (TweenCount >= tweenTimes)
+                                    {
+                                        break;
+                                    }
+                                }
                             }
-                            TweenCount++;
                         }
                         else if (TweenProcess <= 0f && !forward)
                         {
@@ -139,19 +183,45 @@ namespace Wshrzzz.UnityUtil
                             {
                                 TweenProcess = 0f;
                                 TweenValue = 0f;
+                                TweenCount++;
                                 break;
                             }
                             else if (loopSort == LoopType.Loop)
                             {
-                                TweenProcess = 1f;
+                                if (tweenTimes != -1)
+                                {
+                                    TweenCount++;
+                                    if (TweenCount < tweenTimes)
+                                    {
+                                        TweenProcess = 1f;
+                                    }
+                                    else
+                                    {
+                                        TweenProcess = 0f;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    TweenProcess = 1f;
+                                    TweenCount++;
+                                }
                             }
                             else if (loopSort == LoopType.PingPong)
                             {
                                 IdentifyDelta = -IdentifyDelta;
                                 TweenProcess = 0f;
                                 forward = !forward;
+                                TweenCount++;
+
+                                if (tweenTimes != -1)
+                                {
+                                    if (TweenCount >= tweenTimes)
+                                    {
+                                        break;
+                                    }
+                                }
                             }
-                            TweenCount++;
                         }
                         yield return new WaitForSeconds(0.01f);
                     }
@@ -167,19 +237,45 @@ namespace Wshrzzz.UnityUtil
                             {
                                 TweenProcess = 1f;
                                 TweenValue = 1f;
+                                TweenCount++;
                                 break;
                             }
                             else if (loopSort == LoopType.Loop)
                             {
-                                TweenProcess = 0f;
+                                if (tweenTimes != -1)
+                                {
+                                    TweenCount++;
+                                    if (TweenCount < tweenTimes)
+                                    {
+                                        TweenProcess = 0f;
+                                    }
+                                    else
+                                    {
+                                        TweenProcess = 1f;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    TweenProcess = 0f;
+                                    TweenCount++;
+                                }
                             }
                             else if (loopSort == LoopType.PingPong)
                             {
                                 IdentifyDelta = -IdentifyDelta;
                                 TweenProcess = 1f;
                                 forward = !forward;
+                                TweenCount++;
+
+                                if (tweenTimes != -1)
+                                {
+                                    if (TweenCount >= tweenTimes)
+                                    {
+                                        break;
+                                    }
+                                }
                             }
-                            TweenCount++;
                         }
                         else if (TweenProcess <= 0f && !forward)
                         {
@@ -187,19 +283,45 @@ namespace Wshrzzz.UnityUtil
                             {
                                 TweenProcess = 0f;
                                 TweenValue = 0f;
+                                TweenCount++;
                                 break;
                             }
                             else if (loopSort == LoopType.Loop)
                             {
-                                TweenProcess = 1f;
+                                if (tweenTimes != -1)
+                                {
+                                    TweenCount++;
+                                    if (TweenCount < tweenTimes)
+                                    {
+                                        TweenProcess = 1f;
+                                    }
+                                    else
+                                    {
+                                        TweenProcess = 0f;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    TweenProcess = 1f;
+                                    TweenCount++;
+                                }
                             }
                             else if (loopSort == LoopType.PingPong)
                             {
                                 IdentifyDelta = -IdentifyDelta;
                                 TweenProcess = 0f;
                                 forward = !forward;
+                                TweenCount++;
+
+                                if (tweenTimes != -1)
+                                {
+                                    if (TweenCount >= tweenTimes)
+                                    {
+                                        break;
+                                    }
+                                }
                             }
-                            TweenCount++;
                         }
                         yield return new WaitForSeconds(0.01f);
                     }
@@ -215,19 +337,45 @@ namespace Wshrzzz.UnityUtil
                             {
                                 TweenProcess = 1f;
                                 TweenValue = 1f;
+                                TweenCount++;
                                 break;
                             }
                             else if (loopSort == LoopType.Loop)
                             {
-                                TweenProcess = 0f;
+                                if (tweenTimes != -1)
+                                {
+                                    TweenCount++;
+                                    if (TweenCount < tweenTimes)
+                                    {
+                                        TweenProcess = 0f;
+                                    }
+                                    else
+                                    {
+                                        TweenProcess = 1f;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    TweenProcess = 0f;
+                                    TweenCount++;
+                                }
                             }
                             else if (loopSort == LoopType.PingPong)
                             {
                                 IdentifyDelta = -IdentifyDelta;
                                 TweenProcess = 1f;
                                 forward = !forward;
+                                TweenCount++;
+
+                                if (tweenTimes != -1)
+                                {
+                                    if (TweenCount >= tweenTimes)
+                                    {
+                                        break;
+                                    }
+                                }
                             }
-                            TweenCount++;
                         }
                         else if (TweenProcess <= 0f && !forward)
                         {
@@ -235,19 +383,45 @@ namespace Wshrzzz.UnityUtil
                             {
                                 TweenProcess = 0f;
                                 TweenValue = 0f;
+                                TweenCount++;
                                 break;
                             }
                             else if (loopSort == LoopType.Loop)
                             {
-                                TweenProcess = 1f;
+                                if (tweenTimes != -1)
+                                {
+                                    TweenCount++;
+                                    if (TweenCount < tweenTimes)
+                                    {
+                                        TweenProcess = 1f;
+                                    }
+                                    else
+                                    {
+                                        TweenProcess = 0f;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    TweenProcess = 1f;
+                                    TweenCount++;
+                                }
                             }
                             else if (loopSort == LoopType.PingPong)
                             {
                                 IdentifyDelta = -IdentifyDelta;
                                 TweenProcess = 0f;
                                 forward = !forward;
+                                TweenCount++;
+
+                                if (tweenTimes != -1)
+                                {
+                                    if (TweenCount >= tweenTimes)
+                                    {
+                                        break;
+                                    }
+                                }
                             }
-                            TweenCount++;
                         }
                         yield return new WaitForSeconds(0.01f);
                     }
@@ -263,19 +437,45 @@ namespace Wshrzzz.UnityUtil
                             {
                                 TweenProcess = 1f;
                                 TweenValue = 1f;
+                                TweenCount++;
                                 break;
                             }
                             else if (loopSort == LoopType.Loop)
                             {
-                                TweenProcess = 0f;
+                                if (tweenTimes != -1)
+                                {
+                                    TweenCount++;
+                                    if (TweenCount < tweenTimes)
+                                    {
+                                        TweenProcess = 0f;
+                                    }
+                                    else
+                                    {
+                                        TweenProcess = 1f;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    TweenProcess = 0f;
+                                    TweenCount++;
+                                }
                             }
                             else if (loopSort == LoopType.PingPong)
                             {
                                 IdentifyDelta = -IdentifyDelta;
                                 TweenProcess = 1f;
                                 forward = !forward;
+                                TweenCount++;
+
+                                if (tweenTimes != -1)
+                                {
+                                    if (TweenCount >= tweenTimes)
+                                    {
+                                        break;
+                                    }
+                                }
                             }
-                            TweenCount++;
                         }
                         else if (TweenProcess <= 0f && !forward)
                         {
@@ -283,19 +483,45 @@ namespace Wshrzzz.UnityUtil
                             {
                                 TweenProcess = 0f;
                                 TweenValue = 0f;
+                                TweenCount++;
                                 break;
                             }
                             else if (loopSort == LoopType.Loop)
                             {
-                                TweenProcess = 1f;
+                                if (tweenTimes != -1)
+                                {
+                                    TweenCount++;
+                                    if (TweenCount < tweenTimes)
+                                    {
+                                        TweenProcess = 1f;
+                                    }
+                                    else
+                                    {
+                                        TweenProcess = 0f;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    TweenProcess = 1f;
+                                    TweenCount++;
+                                }
                             }
                             else if (loopSort == LoopType.PingPong)
                             {
                                 IdentifyDelta = -IdentifyDelta;
                                 TweenProcess = 0f;
                                 forward = !forward;
+                                TweenCount++;
+
+                                if (tweenTimes != -1)
+                                {
+                                    if (TweenCount >= tweenTimes)
+                                    {
+                                        break;
+                                    }
+                                }
                             }
-                            TweenCount++;
                         }
                         yield return new WaitForSeconds(0.01f);
                     }
