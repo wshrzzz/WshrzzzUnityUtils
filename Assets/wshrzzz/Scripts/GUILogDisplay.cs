@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Wshrzzz.UnityUtil
 {
     /// <summary>
     /// ---------------------------------------------------------
     /// ---------------------------------------------------------
-    /// ------------------version 1.0.7151-----------------------
+    /// ------------------version 1.1.10131-----------------------
     /// ---------------------------------------------------------
     /// ---------------------------------------------------------
     /// Print the log on Unity GUI.
@@ -37,6 +38,9 @@ namespace Wshrzzz.UnityUtil
             mWinWidth = Screen.width;
             mWinHeight = Screen.height * 0.4f;
             mMyDebugWindow0 = new Rect(0f, Screen.height * 0.6f, mWinWidth, mWinHeight);
+
+            CheeterConsole.AddCheeter("showmydebug", () => { showLog = true; });
+            CheeterConsole.AddCheeter("hidemydebug", () => { showLog = false; });
         }
 
         void OnGUI()
@@ -69,7 +73,7 @@ namespace Wshrzzz.UnityUtil
                 mIsAutoScroll = GUILayout.Toggle(mIsAutoScroll, "Auto Scroll", GUILayout.MinWidth(Screen.width * 0.1f), GUILayout.ExpandWidth(false));
                 if (GUILayout.Button("Clean Log", GUILayout.ExpandWidth(false)))
                 {
-                    logInfo = "";
+                    logQueue.Clear();
                 }
             }
             GUILayout.EndHorizontal();
@@ -88,17 +92,54 @@ namespace Wshrzzz.UnityUtil
                     mScrollV2 += mTempV2;
                 }
                 mScrollV2 = GUILayout.BeginScrollView(mScrollV2);
-                GUILayout.Box(logInfo);
+                foreach (var item in logQueue)
+                {
+                    switch (item.type)
+                    {
+                        case LogType.Log:
+                            GUI.color = Color.white;
+                            break;
+                        case LogType.LogWarning:
+                            GUI.color = Color.yellow;
+                            break;
+                        case LogType.LogError:
+                            GUI.color = Color.red;
+                            break;
+                        default:
+                            break;
+                    }
+                    GUILayout.Box(item.log);
+                }
+                GUI.color = Color.white;
+                //GUILayout.Box(logInfo);
                 GUILayout.EndScrollView();
             }
 
             GUI.DragWindow(new Rect(0f, 0f, 10000f, 10000f));
         }
 
-        private static string logInfo = "";
-        private static int logCount = 0;
+        private static Queue<LogItem> logQueue = new Queue<LogItem>();
         private static int maxLogNumber = 400;
         private static bool isWork = false;
+
+        private struct LogItem
+        {
+            public LogType type;
+            public string log;
+
+            public LogItem(LogType type, string log)
+            {
+                this.type = type;
+                this.log = log;
+            }
+        }
+
+        private enum LogType
+        {
+            Log,
+            LogWarning,
+            LogError
+        }
 
         /// <summary>
         /// Use this static method to print log on GUI window.
@@ -108,15 +149,13 @@ namespace Wshrzzz.UnityUtil
         {
             string logStr = log.ToString();
             Debug.Log(logStr);
-            logStr = "[--Log--] " + logStr;
             if (isWork)
             {
-                logCount++;
-                if (logCount > maxLogNumber || logInfo.Length > 10000)
+                logQueue.Enqueue(new LogItem(LogType.Log, logStr));
+                if (logQueue.Count > maxLogNumber)
                 {
-                    logInfo = logInfo.Substring(logInfo.IndexOf("\n") + 1);
+                    logQueue.Dequeue();
                 }
-                logInfo += logStr + "\n";
             }
         }
 
@@ -128,15 +167,13 @@ namespace Wshrzzz.UnityUtil
         {
             string logStr = log.ToString();
             Debug.LogWarning(logStr);
-            logStr = "[--Warning--] " + logStr;
             if (isWork)
             {
-                logCount++;
-                if (logCount > maxLogNumber || logInfo.Length > 10000)
+                logQueue.Enqueue(new LogItem(LogType.LogWarning, logStr));
+                if (logQueue.Count > maxLogNumber)
                 {
-                    logInfo = logInfo.Substring(logInfo.IndexOf("\n") + 1);
+                    logQueue.Dequeue();
                 }
-                logInfo += logStr + "\n";
             }
         }
 
@@ -148,15 +185,13 @@ namespace Wshrzzz.UnityUtil
         {
             string logStr = log.ToString();
             Debug.LogError(logStr);
-            logStr = "[--Error--] " + logStr;
             if (isWork)
             {
-                logCount++;
-                if (logCount > maxLogNumber || logInfo.Length > 10000)
+                logQueue.Enqueue(new LogItem(LogType.LogError, logStr));
+                if (logQueue.Count > maxLogNumber)
                 {
-                    logInfo = logInfo.Substring(logInfo.IndexOf("\n") + 1);
+                    logQueue.Dequeue();
                 }
-                logInfo += logStr + "\n";
             }
         }
 
@@ -166,17 +201,7 @@ namespace Wshrzzz.UnityUtil
         /// <param name="log">Log to print.</param>
         public static void PrintLog(object log)
         {
-            string logStr = log.ToString();
-            Debug.Log(logStr);
-            if (isWork)
-            {
-                logCount++;
-                if (logCount > maxLogNumber || logInfo.Length > 10000)
-                {
-                    logInfo = logInfo.Substring(logInfo.IndexOf("\n") + 1);
-                }
-                logInfo += logStr + "\n";
-            }
+            Log(log);
         }
     }
 }
