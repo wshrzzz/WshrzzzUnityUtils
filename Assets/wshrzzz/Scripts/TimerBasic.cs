@@ -36,10 +36,6 @@ namespace Wshrzzz.UnityUtil
                 StartTime = Time.time;
                 CountTime = 0f;
             }
-            else
-            {
-                StartTime += Time.time - (StartTime + CountTime);
-            }
             IsCounting = true;
 
             StartCoroutine(OnCountingTime());
