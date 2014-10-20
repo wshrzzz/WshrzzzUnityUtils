@@ -3,23 +3,6 @@ using System.Collections;
 
 namespace Wshrzzz.UnityUtil
 {
-    //////////////////////////////////////////////////////////////////////////
-    //
-    //                            TweenBasic 
-    //                        version: 1.0.8221
-    //
-    //////////////////////////////////////////////////////////////////////////
-
-    //////////////////////////////////////////////////////////////////////////
-    //
-    //                         Release features
-    //  ----------------------------------------------------------------------
-    //  ver1.0.8221: Add tween times option when call the StartTween().
-    //
-    //  ----------------------------------------------------------------------
-    //  ver1.0.0: First version, gives a tween process by different tween types.
-    //
-    //////////////////////////////////////////////////////////////////////////
 
     /// <summary>
     /// A tween basic class, offers some tween actions with params.

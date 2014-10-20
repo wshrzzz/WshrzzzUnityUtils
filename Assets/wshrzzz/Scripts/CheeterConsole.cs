@@ -5,12 +5,6 @@ using System.Collections.Generic;
 namespace Wshrzzz.UnityUtil
 {
     /// <summary>
-    /// -------------------------------------------
-    /// -------------------------------------------
-    /// -------------Version 2.0.7151--------------
-    /// --------Not downward compatibility.--------
-    /// -------------------------------------------
-    /// -------------------------------------------
     /// Cheeter console. Invisible input and activate cheeter.
     /// </summary>
     public class CheeterConsole : MonoBehaviour
