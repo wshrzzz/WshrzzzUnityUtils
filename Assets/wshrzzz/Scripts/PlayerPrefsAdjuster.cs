@@ -53,7 +53,7 @@ namespace Wshrzzz.UnityUtil
             return mInstance;
         }
 
-        public static void ChangeSetting(string prefsName, int value)
+        public static void ChangeSetting(string prefsName, int value, string info)
         {
             GetInstance();
             PlayerPrefs.SetInt(prefsName, value);
@@ -61,16 +61,31 @@ namespace Wshrzzz.UnityUtil
             {
                 if (item.PrefsName == prefsName)
                 {
-                    item.Value = value.ToString();
+                    if (info != null)
+                    {
+                        item.Value = value.ToString() + " -- [" + info + "]";
+                    }
+                    else
+                    {
+                        item.Value = value.ToString();
+                    }
                     item.ShowCountDown = 2.5f;
                     return;
                 }
             }
-            PrefsListItem newItem = new PrefsListItem() { PrefsName = prefsName, Value = value.ToString(), ShowCountDown = 2.5f };
-            mInstance.MyChangeList.Add(newItem);
+            if (info != null)
+            {
+                PrefsListItem newItem = new PrefsListItem() { PrefsName = prefsName, Value = value.ToString() + " -- [" + info + "]", ShowCountDown = 2.5f };
+                mInstance.MyChangeList.Add(newItem);
+            }
+            else
+            {
+                PrefsListItem newItem = new PrefsListItem() { PrefsName = prefsName, Value = value.ToString(), ShowCountDown = 2.5f };
+                mInstance.MyChangeList.Add(newItem);
+            }
         }
 
-        public static void ChangeSetting(string prefsName, float value)
+        public static void ChangeSetting(string prefsName, float value, string info)
         {
             GetInstance();
             PlayerPrefs.SetFloat(prefsName, value);
@@ -78,16 +93,31 @@ namespace Wshrzzz.UnityUtil
             {
                 if (item.PrefsName == prefsName)
                 {
-                    item.Value = value.ToString("F3");
+                    if (info != null)
+                    {
+                        item.Value = value.ToString("F3") + " -- [" + info + "]";
+                    }
+                    else
+                    {
+                        item.Value = value.ToString("F3");
+                    }
                     item.ShowCountDown = 2.5f;
                     return;
                 }
             }
-            PrefsListItem newItem = new PrefsListItem() { PrefsName = prefsName, Value = value.ToString("F3"), ShowCountDown = 2.5f };
-            mInstance.MyChangeList.Add(newItem);
+            if (info != null)
+            {
+                PrefsListItem newItem = new PrefsListItem() { PrefsName = prefsName, Value = value.ToString("F3") + " -- [" + info + "]", ShowCountDown = 2.5f };
+                mInstance.MyChangeList.Add(newItem);
+            }
+            else
+            {
+                PrefsListItem newItem = new PrefsListItem() { PrefsName = prefsName, Value = value.ToString("F3"), ShowCountDown = 2.5f };
+                mInstance.MyChangeList.Add(newItem);
+            }
         }
 
-        public static void ChangeSetting(string prefsName, string value)
+        public static void ChangeSetting(string prefsName, string value, string info)
         {
             GetInstance();
             PlayerPrefs.SetString(prefsName, value);
@@ -95,13 +125,28 @@ namespace Wshrzzz.UnityUtil
             {
                 if (item.PrefsName == prefsName)
                 {
-                    item.Value = value;
+                    if (info != null)
+                    {
+                        item.Value = value + " -- [" + info + "]";
+                    }
+                    else
+                    {
+                        item.Value = value;
+                    }
                     item.ShowCountDown = 2.5f;
                     return;
                 }
             }
-            PrefsListItem newItem = new PrefsListItem() { PrefsName = prefsName, Value = value, ShowCountDown = 2.5f };
-            mInstance.MyChangeList.Add(newItem);
+            if (info != null)
+            {
+                PrefsListItem newItem = new PrefsListItem() { PrefsName = prefsName, Value = value + " -- [" + info + "]", ShowCountDown = 2.5f };
+                mInstance.MyChangeList.Add(newItem);
+            }
+            else
+            {
+                PrefsListItem newItem = new PrefsListItem() { PrefsName = prefsName, Value = value, ShowCountDown = 2.5f };
+                mInstance.MyChangeList.Add(newItem);
+            }
         }
 
         public class PrefsListItem

@@ -19,23 +19,23 @@ public class PlayerPrefsAdjusterTest : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             TestPrefsUpDown++;
-            PlayerPrefsAdjuster.ChangeSetting("TestPrefsUpDown", TestPrefsUpDown);
+            PlayerPrefsAdjuster.ChangeSetting("TestPrefsUpDown", TestPrefsUpDown, "Description:" + TestPrefsUpDown);
         } 
         else if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             TestPrefsUpDown--;
-            PlayerPrefsAdjuster.ChangeSetting("TestPrefsUpDown", TestPrefsUpDown);
+            PlayerPrefsAdjuster.ChangeSetting("TestPrefsUpDown", TestPrefsUpDown, "Description:" + TestPrefsUpDown);
         }
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             TestPrefsLeftRight--;
-            PlayerPrefsAdjuster.ChangeSetting("TestPrefsLeftRight", TestPrefsLeftRight);
+            PlayerPrefsAdjuster.ChangeSetting("TestPrefsLeftRight", TestPrefsLeftRight, null);
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             TestPrefsLeftRight++;
-            PlayerPrefsAdjuster.ChangeSetting("TestPrefsLeftRight", TestPrefsLeftRight);
+            PlayerPrefsAdjuster.ChangeSetting("TestPrefsLeftRight", TestPrefsLeftRight, null);
         }
 	}
 }
