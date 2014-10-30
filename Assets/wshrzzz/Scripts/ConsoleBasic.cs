@@ -1,23 +1,38 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Wshrzzz.UnityUtil
 {
     public class ConsoleBasic : MonoBehaviour
     {
-        void OnGUI()
+        private bool m_ShowConsole = false;
+
+        private 
+
+        void Start()
         {
-            GUILayout.BeginArea(new Rect(0, Screen.height - 25, Screen.width, 25));
-            s_ConsoleStr = GUILayout.TextField(s_ConsoleStr);
-            GUILayout.EndArea();
+            CheeterConsole.AddCheeter("openmyconsole", () => { m_ShowConsole = true; });
         }
 
-        void Update()
+        void OnGUI()
         {
-            if (s_ConsoleStr != "" && s_ConsoleStr.Substring(s_ConsoleStr.Length - 1, 1) == "\n")
+            if (m_ShowConsole)
             {
-                Debug.Log("asdf");
+                GUILayout.BeginArea(new Rect(0, Screen.height - 25, Screen.width, 25));
+                GUI.SetNextControlName("ConsoleString");
+                s_ConsoleStr = GUILayout.TextField(s_ConsoleStr);
+                GUI.FocusControl("ConsoleString");
+                GUILayout.EndArea();
+                if (Event.current.keyCode == KeyCode.Return && Event.current.type == EventType.KeyUp)
+                {
+                    DealCommand(s_ConsoleStr);
+                }
             }
+        }
+
+        void DealCommand(string consoleStr){
+            s_ConsoleStr = "";
         }
 
         private static string s_ConsoleStr = "";
