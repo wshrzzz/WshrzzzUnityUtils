@@ -8,11 +8,21 @@ namespace Wshrzzz.UnityUtil
     {
         private bool m_ShowConsole = false;
 
-        private 
+        private List<string> m_ArgsList = new List<string>();
+
+        public delegate void ConsoleDelegate(params string[] list);
+        private static Hashtable s_Command = new Hashtable();
+
+        void Awake()
+        {
+
+        }
 
         void Start()
         {
             CheeterConsole.AddCheeter("openmyconsole", () => { m_ShowConsole = true; });
+
+            AddCommand("exit", (list) => { m_ShowConsole = false; });
         }
 
         void OnGUI()
@@ -32,7 +42,65 @@ namespace Wshrzzz.UnityUtil
         }
 
         void DealCommand(string consoleStr){
+            consoleStr = consoleStr.Trim();
+            int spaceIndex = consoleStr.IndexOf(' ');
+            if (spaceIndex == -1)
+            {
+                if (s_Command.ContainsKey(consoleStr))
+                {
+                    (s_Command[consoleStr] as ConsoleDelegate)();
+                }
+                else
+                {
+                    GUILogDisplay.LogError("\"" + consoleStr + "\" isn't an available command!");
+                }
+            }
+            else
+            {
+                string command = consoleStr.Substring(0, spaceIndex);
+                if (s_Command.ContainsKey(command))
+                {
+                    m_ArgsList.Clear();
+                    while (true)
+                    {
+                        int nextStartIndex = spaceIndex + 1;
+                        spaceIndex = consoleStr.IndexOf(' ', nextStartIndex);
+                        if (spaceIndex == -1)
+                        {
+                            m_ArgsList.Add(consoleStr.Substring(nextStartIndex));
+                            break;
+                        }
+                        else
+                        {
+                            m_ArgsList.Add(consoleStr.Substring(nextStartIndex, spaceIndex - nextStartIndex));
+                        }
+                    }
+                    (s_Command[command] as ConsoleDelegate)(m_ArgsList.ToArray());
+                }
+                else
+                {
+                    GUILogDisplay.LogError("\"" + command + "\" isn't an available command!");
+                }
+            }
             s_ConsoleStr = "";
+        }
+
+        public static void AddCommand(string command, ConsoleDelegate method)
+        {
+            if (!ConsoleBasic.Instance)
+            {
+                return;
+            }
+
+            if (s_Command.ContainsKey(command))
+            {
+                GUILogDisplay.LogError("\"" + command + "\" is already exsit.");
+            }
+            else
+            {
+                s_Command.Add(command, method);
+                GUILogDisplay.Log("Add command \"" + command + "\"");
+            }
         }
 
         private static string s_ConsoleStr = "";
