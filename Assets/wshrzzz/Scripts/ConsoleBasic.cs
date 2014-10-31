@@ -13,11 +13,6 @@ namespace Wshrzzz.UnityUtil
         public delegate void ConsoleDelegate(params string[] list);
         private static Hashtable s_Command = new Hashtable();
 
-        void Awake()
-        {
-
-        }
-
         void Start()
         {
             CheeterConsole.AddCheeter("openmyconsole", () => { m_ShowConsole = true; });
@@ -41,6 +36,10 @@ namespace Wshrzzz.UnityUtil
             }
         }
 
+        /// <summary>
+        /// When press Enter key in the console input bar, it will deal the command.
+        /// </summary>
+        /// <param name="consoleStr">Whole command string.</param>
         void DealCommand(string consoleStr){
             consoleStr = consoleStr.Trim();
             int spaceIndex = consoleStr.IndexOf(' ');
@@ -85,6 +84,11 @@ namespace Wshrzzz.UnityUtil
             s_ConsoleStr = "";
         }
 
+        /// <summary>
+        /// Use this method to add commands to the ConsoleBasic.
+        /// </summary>
+        /// <param name="command">Command name.</param>
+        /// <param name="method">Call back handler.</param>
         public static void AddCommand(string command, ConsoleDelegate method)
         {
             if (!ConsoleBasic.Instance)
