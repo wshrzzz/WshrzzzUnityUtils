@@ -179,28 +179,28 @@ namespace Wshrzzz.UnityUtil
             }
         }
 
-        private static CheeterConsole mInstance = null;
+        private static CheeterConsole s_Instance = null;
 
         public static CheeterConsole GetInstance()
         {
-            if (mInstance != null)
+            if (s_Instance != null)
             {
-                return mInstance;
+                return s_Instance;
             }
             else
             {
-                mInstance = FindObjectOfType<CheeterConsole>();
-                if (mInstance != null)
+                s_Instance = FindObjectOfType<CheeterConsole>();
+                if (s_Instance != null)
                 {
-                    return mInstance;
+                    return s_Instance;
                 }
                 else
                 {
                     GameObject go = new GameObject();
                     go.name = "CheeterManager";
                     go.AddComponent<CheeterConsole>();
-                    mInstance = go.GetComponent<CheeterConsole>();
-                    return mInstance;
+                    s_Instance = go.GetComponent<CheeterConsole>();
+                    return s_Instance;
                 }
             }
         }

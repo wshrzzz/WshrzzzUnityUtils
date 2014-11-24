@@ -10,13 +10,13 @@ namespace Wshrzzz.UnityUtil
     /// </summary>
     public class GUILogDisplay : MonoBehaviour
     {
-        private Vector2 mScrollV2 = new Vector2(0f, 0f);
-        private Vector2 mTempV2 = new Vector2(0f, 1000f);
-        private bool mIsAutoScroll = true;
-        private float mWinWidth;
-        private float mWinHeight;
-        private Rect mMyDebugWindow0;
-        private bool mShowWin = true;
+        private Vector2 m_ScrollV2 = new Vector2(0f, 0f);
+        private Vector2 m_TempV2 = new Vector2(0f, 1000f);
+        private bool m_IsAutoScroll = true;
+        private float m_WinWidth;
+        private float m_WinHeight;
+        private Rect m_MyDebugWindow0;
+        private bool m_ShowWin = true;
 
         /// <summary>
         /// Whether show debug log window.
@@ -30,9 +30,9 @@ namespace Wshrzzz.UnityUtil
 
         void Start()
         {
-            mWinWidth = Screen.width;
-            mWinHeight = Screen.height * 0.4f;
-            mMyDebugWindow0 = new Rect(0f, Screen.height * 0.6f, mWinWidth, mWinHeight);
+            m_WinWidth = Screen.width;
+            m_WinHeight = Screen.height * 0.4f;
+            m_MyDebugWindow0 = new Rect(0f, Screen.height * 0.6f, m_WinWidth, m_WinHeight);
 
             CheeterConsole.AddCheeter("showmydebug", () => { showLog = true; });
             CheeterConsole.AddCheeter("hidemydebug", () => { showLog = false; });
@@ -42,17 +42,17 @@ namespace Wshrzzz.UnityUtil
         {
             if (showLog)
             {
-                if (mShowWin)
+                if (m_ShowWin)
                 {
-                    mMyDebugWindow0.width = mWinWidth;
-                    mMyDebugWindow0.height = mWinHeight;
+                    m_MyDebugWindow0.width = m_WinWidth;
+                    m_MyDebugWindow0.height = m_WinHeight;
                 }
                 else
 	            {
-                    mMyDebugWindow0.width = 0f;
-                    mMyDebugWindow0.height = 0f;
+                    m_MyDebugWindow0.width = 0f;
+                    m_MyDebugWindow0.height = 0f;
 	            }
-                mMyDebugWindow0 = GUILayout.Window(1226, mMyDebugWindow0, DisplayMyLog, "DEBUG");
+                m_MyDebugWindow0 = GUILayout.Window(1226, m_MyDebugWindow0, DisplayMyLog, "DEBUG");
             }
         }
 
@@ -62,10 +62,10 @@ namespace Wshrzzz.UnityUtil
         void DisplayMyLog(int winID)
         {
             GUILayout.BeginHorizontal("Label");
-            mShowWin = GUILayout.Toggle(mShowWin, "Show Debug", GUILayout.MinWidth(Screen.width * 0.1f), GUILayout.ExpandWidth(false));
-            if (mShowWin)
+            m_ShowWin = GUILayout.Toggle(m_ShowWin, "Show Debug", GUILayout.MinWidth(Screen.width * 0.1f), GUILayout.ExpandWidth(false));
+            if (m_ShowWin)
             {
-                mIsAutoScroll = GUILayout.Toggle(mIsAutoScroll, "Auto Scroll", GUILayout.MinWidth(Screen.width * 0.1f), GUILayout.ExpandWidth(false));
+                m_IsAutoScroll = GUILayout.Toggle(m_IsAutoScroll, "Auto Scroll", GUILayout.MinWidth(Screen.width * 0.1f), GUILayout.ExpandWidth(false));
                 if (GUILayout.Button("Clean Log", GUILayout.ExpandWidth(false)))
                 {
                     logQueue.Clear();
@@ -73,20 +73,20 @@ namespace Wshrzzz.UnityUtil
             }
             GUILayout.EndHorizontal();
 
-            if (mShowWin)
+            if (m_ShowWin)
             {
                 GUILayout.BeginHorizontal("Label");
                 GUILayout.Label("Width", GUILayout.ExpandWidth(false));
-                mWinWidth = GUILayout.HorizontalSlider(mWinWidth, Screen.width * 0.5f, Screen.width, GUILayout.MinWidth(Screen.width * 0.2f), GUILayout.ExpandWidth(false));
+                m_WinWidth = GUILayout.HorizontalSlider(m_WinWidth, Screen.width * 0.5f, Screen.width, GUILayout.MinWidth(Screen.width * 0.2f), GUILayout.ExpandWidth(false));
                 GUILayout.Label("Height", GUILayout.ExpandWidth(false));
-                mWinHeight = GUILayout.HorizontalSlider(mWinHeight, Screen.height * 0.3f, Screen.height, GUILayout.MinWidth(Screen.width * 0.2f), GUILayout.ExpandWidth(false));
+                m_WinHeight = GUILayout.HorizontalSlider(m_WinHeight, Screen.height * 0.3f, Screen.height, GUILayout.MinWidth(Screen.width * 0.2f), GUILayout.ExpandWidth(false));
                 GUILayout.EndHorizontal();
 
-                if (mIsAutoScroll)
+                if (m_IsAutoScroll)
                 {
-                    mScrollV2 += mTempV2;
+                    m_ScrollV2 += m_TempV2;
                 }
-                mScrollV2 = GUILayout.BeginScrollView(mScrollV2);
+                m_ScrollV2 = GUILayout.BeginScrollView(m_ScrollV2);
                 foreach (var item in logQueue)
                 {
                     switch (item.type)

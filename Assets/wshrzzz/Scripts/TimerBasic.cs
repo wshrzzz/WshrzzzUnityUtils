@@ -15,7 +15,7 @@ namespace Wshrzzz.UnityUtil
         /// </summary>
         public float CountTime { get; private set; }
 
-        private bool mIsStopInTheEnd { get; set; }
+        private bool IsStopInTheEnd { get; set; }
         private float StartTime { get; set; }
         private float LimiteTime { get; set; }
 
@@ -32,9 +32,13 @@ namespace Wshrzzz.UnityUtil
             if (reset)
             {
                 LimiteTime = time;
-                mIsStopInTheEnd = stopInTheEnd;
+                IsStopInTheEnd = stopInTheEnd;
                 StartTime = Time.time;
                 CountTime = 0f;
+            }
+            else
+            {
+                StartTime = Time.time - CountTime;
             }
             IsCounting = true;
 
@@ -46,7 +50,7 @@ namespace Wshrzzz.UnityUtil
             while (IsCounting)
             {
                 CountTime = Time.time - StartTime;
-                if (CountTime >= LimiteTime && mIsStopInTheEnd)
+                if (CountTime >= LimiteTime && IsStopInTheEnd)
                 {
                     IsCounting = false;
                 }
@@ -79,7 +83,7 @@ namespace Wshrzzz.UnityUtil
         public static TimerBasic InitTimer(GameObject go){
             TimerBasic timer = go.AddComponent<TimerBasic>();
             timer.IsCounting = false;
-            timer.mIsStopInTheEnd = true;
+            timer.IsStopInTheEnd = true;
             timer.CountTime = 0f;
             timer.StartTime = 0f;
             timer.LimiteTime = 0f;

@@ -37,27 +37,27 @@ namespace Wshrzzz.UnityUtil
             }
         }
 
-        private static PlayerPrefsAdjuster mInstance = null;
+        private static PlayerPrefsAdjuster s_Instance = null;
 
         public static PlayerPrefsAdjuster GetInstance()
         {
-            if (mInstance == null)
+            if (s_Instance == null)
             {
                 GameObject go = new GameObject();
                 go.name = "PlayerPrefsAdjuster";
                 go.AddComponent<PlayerPrefsAdjuster>();
-                mInstance = go.GetComponent<PlayerPrefsAdjuster>();
-                mInstance.MyChangeList = new List<PrefsListItem>();
-                mInstance.MyRemoveList = new List<PrefsListItem>();
+                s_Instance = go.GetComponent<PlayerPrefsAdjuster>();
+                s_Instance.MyChangeList = new List<PrefsListItem>();
+                s_Instance.MyRemoveList = new List<PrefsListItem>();
             }
-            return mInstance;
+            return s_Instance;
         }
 
         public static void ChangeSetting(string prefsName, int value, string info)
         {
             GetInstance();
             PlayerPrefs.SetInt(prefsName, value);
-            foreach (var item in mInstance.MyChangeList)
+            foreach (var item in s_Instance.MyChangeList)
             {
                 if (item.PrefsName == prefsName)
                 {
@@ -76,12 +76,12 @@ namespace Wshrzzz.UnityUtil
             if (info != null)
             {
                 PrefsListItem newItem = new PrefsListItem() { PrefsName = prefsName, Value = value.ToString() + " -- [" + info + "]", ShowCountDown = 2.5f };
-                mInstance.MyChangeList.Add(newItem);
+                s_Instance.MyChangeList.Add(newItem);
             }
             else
             {
                 PrefsListItem newItem = new PrefsListItem() { PrefsName = prefsName, Value = value.ToString(), ShowCountDown = 2.5f };
-                mInstance.MyChangeList.Add(newItem);
+                s_Instance.MyChangeList.Add(newItem);
             }
         }
 
@@ -89,7 +89,7 @@ namespace Wshrzzz.UnityUtil
         {
             GetInstance();
             PlayerPrefs.SetFloat(prefsName, value);
-            foreach (var item in mInstance.MyChangeList)
+            foreach (var item in s_Instance.MyChangeList)
             {
                 if (item.PrefsName == prefsName)
                 {
@@ -108,12 +108,12 @@ namespace Wshrzzz.UnityUtil
             if (info != null)
             {
                 PrefsListItem newItem = new PrefsListItem() { PrefsName = prefsName, Value = value.ToString("F3") + " -- [" + info + "]", ShowCountDown = 2.5f };
-                mInstance.MyChangeList.Add(newItem);
+                s_Instance.MyChangeList.Add(newItem);
             }
             else
             {
                 PrefsListItem newItem = new PrefsListItem() { PrefsName = prefsName, Value = value.ToString("F3"), ShowCountDown = 2.5f };
-                mInstance.MyChangeList.Add(newItem);
+                s_Instance.MyChangeList.Add(newItem);
             }
         }
 
@@ -121,7 +121,7 @@ namespace Wshrzzz.UnityUtil
         {
             GetInstance();
             PlayerPrefs.SetString(prefsName, value);
-            foreach (var item in mInstance.MyChangeList)
+            foreach (var item in s_Instance.MyChangeList)
             {
                 if (item.PrefsName == prefsName)
                 {
@@ -140,12 +140,12 @@ namespace Wshrzzz.UnityUtil
             if (info != null)
             {
                 PrefsListItem newItem = new PrefsListItem() { PrefsName = prefsName, Value = value + " -- [" + info + "]", ShowCountDown = 2.5f };
-                mInstance.MyChangeList.Add(newItem);
+                s_Instance.MyChangeList.Add(newItem);
             }
             else
             {
                 PrefsListItem newItem = new PrefsListItem() { PrefsName = prefsName, Value = value, ShowCountDown = 2.5f };
-                mInstance.MyChangeList.Add(newItem);
+                s_Instance.MyChangeList.Add(newItem);
             }
         }
 

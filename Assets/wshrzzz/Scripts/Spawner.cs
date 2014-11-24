@@ -6,12 +6,12 @@ namespace Wshrzzz.UnityUtil
     public class Spawner : MonoBehaviour
     {
 
-        private SpawnShape shapeType = SpawnShape.None;
-        private float cubeX;
-        private float cubeY;
-        private float cubeZ;
-        private float sphereRadius;
-        private Vector3 originPoint;
+        private SpawnShape m_ShapeType = SpawnShape.None;
+        private float m_CubeX;
+        private float m_CubeY;
+        private float m_CubeZ;
+        private float m_SphereRadius;
+        private Vector3 m_OriginPoint;
 
         /// <summary>
         /// Spawn in a cube space.
@@ -26,11 +26,11 @@ namespace Wshrzzz.UnityUtil
         {
             transform.localPosition = spawnerPos;
             transform.rotation = spawnerRotation;
-            shapeType = isOnShell ? SpawnShape.CubeShell : SpawnShape.Cube;
-            cubeX = Mathf.Clamp(x, 0f, Mathf.Infinity);
-            cubeY = Mathf.Clamp(y, 0f, Mathf.Infinity);
-            cubeZ = Mathf.Clamp(z, 0f, Mathf.Infinity);
-            originPoint = transform.position - transform.right * cubeX * 0.5f - transform.up * cubeY * 0.5f - transform.forward * cubeZ * 0.5f;
+            m_ShapeType = isOnShell ? SpawnShape.CubeShell : SpawnShape.Cube;
+            m_CubeX = Mathf.Clamp(x, 0f, Mathf.Infinity);
+            m_CubeY = Mathf.Clamp(y, 0f, Mathf.Infinity);
+            m_CubeZ = Mathf.Clamp(z, 0f, Mathf.Infinity);
+            m_OriginPoint = transform.position - transform.right * m_CubeX * 0.5f - transform.up * m_CubeY * 0.5f - transform.forward * m_CubeZ * 0.5f;
         }
 
         /// <summary>
@@ -42,9 +42,9 @@ namespace Wshrzzz.UnityUtil
         public void SetupSpawner(Vector3 spawnerPos, float radius, bool isOnShell = false)
         {
             transform.localPosition = spawnerPos;
-            shapeType = isOnShell ? SpawnShape.SphereShell : SpawnShape.Sphere;
-            sphereRadius = Mathf.Clamp(radius, 0f, Mathf.Infinity);
-            originPoint = spawnerPos;
+            m_ShapeType = isOnShell ? SpawnShape.SphereShell : SpawnShape.Sphere;
+            m_SphereRadius = Mathf.Clamp(radius, 0f, Mathf.Infinity);
+            m_OriginPoint = spawnerPos;
         }
 
         /// <summary>
@@ -54,22 +54,22 @@ namespace Wshrzzz.UnityUtil
         /// <param name="objectRotation">Object's rotation when instantiate.</param>
         public void Spawn(Transform objectForSpawn, Quaternion objectRotation)
         {
-            Vector3 spawnPoint = originPoint;
-            switch (shapeType)
+            Vector3 spawnPoint = m_OriginPoint;
+            switch (m_ShapeType)
             {
                 case SpawnShape.None:
                     Debug.LogWarning("Spawner isn't inited.");
                     break;
                 case SpawnShape.Cube:
-                    spawnPoint += Random.Range(0f, 1f) * cubeZ * transform.forward;
-                    spawnPoint += Random.Range(0f, 1f) * cubeY * transform.up;
-                    spawnPoint += Random.Range(0f, 1f) * cubeX * transform.right;
+                    spawnPoint += Random.Range(0f, 1f) * m_CubeZ * transform.forward;
+                    spawnPoint += Random.Range(0f, 1f) * m_CubeY * transform.up;
+                    spawnPoint += Random.Range(0f, 1f) * m_CubeX * transform.right;
                     Instantiate(objectForSpawn, spawnPoint, objectRotation);
                     break;
                 case SpawnShape.CubeShell:
-                    Vector3 xV3 = Random.Range(0f, 1f) * cubeX * transform.right;
-                    Vector3 yV3 = Random.Range(0f, 1f) * cubeY * transform.up;
-                    Vector3 zV3 = Random.Range(0f, 1f) * cubeZ * transform.forward;
+                    Vector3 xV3 = Random.Range(0f, 1f) * m_CubeX * transform.right;
+                    Vector3 yV3 = Random.Range(0f, 1f) * m_CubeY * transform.up;
+                    Vector3 zV3 = Random.Range(0f, 1f) * m_CubeZ * transform.forward;
 
                     float temp = Random.Range(0f, 6f);
                     if (temp <= 1f)
@@ -78,7 +78,7 @@ namespace Wshrzzz.UnityUtil
                     }
                     else if (temp <= 2f)
                     {
-                        xV3 = cubeX * transform.right;
+                        xV3 = m_CubeX * transform.right;
                     }
                     else if (temp <= 3f)
                     {
@@ -86,7 +86,7 @@ namespace Wshrzzz.UnityUtil
                     }
                     else if (temp <= 4f)
                     {
-                        yV3 = cubeY * transform.up;
+                        yV3 = m_CubeY * transform.up;
                     }
                     else if (temp <= 5f)
                     {
@@ -94,18 +94,18 @@ namespace Wshrzzz.UnityUtil
                     }
                     else if (temp <= 6f)
                     {
-                        zV3 = cubeZ * transform.forward;
+                        zV3 = m_CubeZ * transform.forward;
                     }
 
-                    spawnPoint = originPoint + xV3 + yV3 + zV3;
+                    spawnPoint = m_OriginPoint + xV3 + yV3 + zV3;
                     Instantiate(objectForSpawn, spawnPoint, objectRotation);
                     break;
                 case SpawnShape.Sphere:
-                    spawnPoint += (new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f))).normalized * sphereRadius * Random.Range(0f, 1f);
+                    spawnPoint += (new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f))).normalized * m_SphereRadius * Random.Range(0f, 1f);
                     Instantiate(objectForSpawn, spawnPoint, objectRotation);
                     break;
                 case SpawnShape.SphereShell:
-                    spawnPoint += (new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f))).normalized * sphereRadius;
+                    spawnPoint += (new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f))).normalized * m_SphereRadius;
                     Instantiate(objectForSpawn, spawnPoint, objectRotation);
                     break;
                 default:
