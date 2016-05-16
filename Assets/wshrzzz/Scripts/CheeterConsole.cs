@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Wshrzzz.UnityUtil
+namespace Wshrzzz.UnityUtils
 {
     /// <summary>
     /// Cheeter console. Invisible input and activate cheeter.
