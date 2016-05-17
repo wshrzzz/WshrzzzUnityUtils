@@ -15,7 +15,7 @@ namespace Wshrzzz.UnityUtils
         {
         }
 
-        public override void Draw()
+        public void Draw()
         {
             UniqueDraw(() =>
             {

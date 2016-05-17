@@ -3,8 +3,10 @@ using System;
 
 namespace Wshrzzz.UnityUtils
 {
-    public class GUITextField : GUIBaseText, IGUIDrawable
+    public class GUIPasswordField : GUIBaseText, IGUIDrawable
     {
+        private static readonly char Default_Mask_Char = '*';
+
         public string Text
         {
             get
@@ -17,20 +19,23 @@ namespace Wshrzzz.UnityUtils
                 m_LastText = value;
             }
         }
+        public char MaskChar { get; set; }
 
         public event EventHandler<TextChangedEventArgs> TextChangedEvent;
 
-        public GUITextField()
+        public GUIPasswordField()
             : base()
         {
             m_LastText = base.Text;
+            MaskChar = Default_Mask_Char;
         }
 
-        public GUITextField(string text)
+        public GUIPasswordField(string text)
             : base(text)
         {
             base.Text = text;
             m_LastText = base.Text;
+            MaskChar = Default_Mask_Char;
         }
 
         public void Draw()
@@ -39,11 +44,11 @@ namespace Wshrzzz.UnityUtils
             {
                 if (m_MaxLength >= 0)
                 {
-                    base.Text = GUI.TextField(DrawingRect, base.Text, m_MaxLength);
+                    base.Text = GUI.PasswordField(DrawingRect, base.Text, MaskChar, m_MaxLength);
                 }
                 else
                 {
-                    base.Text = GUI.TextField(DrawingRect, base.Text);
+                    base.Text = GUI.PasswordField(DrawingRect, base.Text, MaskChar);
                 }
                 if (TextChangedEvent != null && base.Text != m_LastText)
                 {

@@ -2,11 +2,16 @@
 //
 //								WshrzzzUnityUtils
 //								
-//							      Ver 1.3.617
+//							      Ver 1.3.717
 //
 /////////////////////////////////////////////////////////////////////////////////////
 
 Change notes:
+	1.3.717
+	Add GUIPasswordField class
+	Add GUITextArea class
+	Add GUIBaseText class
+
 	1.3.617
 	GUI:
 	Add GUIBaseSlider class

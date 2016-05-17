@@ -3,7 +3,7 @@ using System;
 
 namespace Wshrzzz.UnityUtils
 {
-    public class GUITextField : GUIBaseText, IGUIDrawable
+    public class GUITextArea : GUIBaseText, IGUIDrawable
     {
         public string Text
         {
@@ -20,13 +20,13 @@ namespace Wshrzzz.UnityUtils
 
         public event EventHandler<TextChangedEventArgs> TextChangedEvent;
 
-        public GUITextField()
+        public GUITextArea()
             : base()
         {
             m_LastText = base.Text;
         }
 
-        public GUITextField(string text)
+        public GUITextArea(string text)
             : base(text)
         {
             base.Text = text;
@@ -39,11 +39,11 @@ namespace Wshrzzz.UnityUtils
             {
                 if (m_MaxLength >= 0)
                 {
-                    base.Text = GUI.TextField(DrawingRect, base.Text, m_MaxLength);
+                    base.Text = GUI.TextArea(DrawingRect, base.Text, m_MaxLength);
                 }
                 else
                 {
-                    base.Text = GUI.TextField(DrawingRect, base.Text);
+                    base.Text = GUI.TextArea(DrawingRect, base.Text);
                 }
                 if (TextChangedEvent != null && base.Text != m_LastText)
                 {
