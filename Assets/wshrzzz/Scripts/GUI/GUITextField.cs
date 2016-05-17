@@ -23,20 +23,32 @@ namespace Wshrzzz.UnityUtils
         }
 
         private string m_LastText;
+        public string Text
+        {
+            get
+            {
+                return base.Text;
+            }
+            set
+            {
+                base.Text = value;
+                m_LastText = value;
+            }
+        }
 
-        public event EventHandler TextChangedEvent;
+        public event EventHandler<TextChangedEventArgs> TextChangedEvent;
 
         public GUITextField()
             : base(Default_Position, Default_Size, Default_Pivot)
         {
-            m_LastText = this.Text;
+            m_LastText = base.Text;
         }
 
         public GUITextField(string text)
             : base(Default_Position, Default_Size, Default_Pivot)
         {
-            this.Text = text;
-            m_LastText = this.Text;
+            base.Text = text;
+            m_LastText = base.Text;
         }
 
         public void Draw()
@@ -45,18 +57,32 @@ namespace Wshrzzz.UnityUtils
             {
                 if (m_MaxLength >= 0)
                 {
-                    Text = GUI.TextField(DrawingRect, Text, m_MaxLength);
+                    base.Text = GUI.TextField(DrawingRect, base.Text, m_MaxLength);
                 }
                 else
                 {
-                    Text = GUI.TextField(DrawingRect, Text);
+                    base.Text = GUI.TextField(DrawingRect, base.Text);
                 }
-                if (TextChangedEvent != null && Text != m_LastText)
+                if (TextChangedEvent != null && base.Text != m_LastText)
                 {
-                    TextChangedEvent(this, null);
+                    TextChangedEventArgs args = new TextChangedEventArgs();
+                    args.Time = DateTime.Now;
+                    args.Base = this;
+                    args.TextField = this;
+                    args.LastText = m_LastText;
+                    args.CurrentText = base.Text;
+                    TextChangedEvent(this, args);
+
+                    m_LastText = Text;
                 }
-                m_LastText = Text;
             });
         }
-    } 
+    }
+
+    public class TextChangedEventArgs : GUIEventArgs
+    {
+        public GUITextField TextField;
+        public string LastText;
+        public string CurrentText;
+    }
 }

@@ -9,7 +9,7 @@ namespace Wshrzzz.UnityUtils
         private static readonly Vector2 Default_Size = new Vector2(100f, 100f);
         private static readonly PivotType Default_Pivot = PivotType.LeftTop;
 
-        public event EventHandler ButtonClickEvent;
+        public event EventHandler<ButtonClickEventArgs> ButtonClickEvent;
 
         public GUIButton()
             : base(Default_Position, Default_Size, Default_Pivot)
@@ -44,10 +44,19 @@ namespace Wshrzzz.UnityUtils
                 {
                     if (ButtonClickEvent != null)
                     {
-                        ButtonClickEvent(this, null);
+                        ButtonClickEventArgs args = new ButtonClickEventArgs();
+                        args.Time = DateTime.Now;
+                        args.Base = this;
+                        args.Button = this;
+                        ButtonClickEvent(this, args);
                     }
                 }
             });
         }
-    } 
+    }
+
+    public class ButtonClickEventArgs : GUIEventArgs
+    {
+        public GUIButton Button;
+    }
 }

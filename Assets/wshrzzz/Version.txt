@@ -2,11 +2,25 @@
 //
 //								WshrzzzUnityUtils
 //								
-//							      Ver 1.3.516
+//							      Ver 1.3.617
 //
 /////////////////////////////////////////////////////////////////////////////////////
 
 Change notes:
+	1.3.617
+	GUI:
+	Add GUIBaseSlider class
+	Add GUIHorizontalSlider class
+	Add GUIVerticalSlider class
+	Add GUIScrollView class
+	Add GUIToggle class
+	Add GUIWindow class
+	Add GUIEventArgs class
+	Set DrawingRect been protected in GUIBase
+	Set UpdateRect() been private in GUIBase
+	Add UpdatePosAndSize to GUIBase
+	Add child coordinate system to GUIBase
+
 	1.3.516
 	GUI:
 	Add GUIBase class
