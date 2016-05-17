@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Wshrzzz.UnityUtil
+namespace Wshrzzz.UnityUtils
 {
     public class ConsoleBasic : MonoBehaviour
     {

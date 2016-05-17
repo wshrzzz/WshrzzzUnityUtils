@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Wshrzzz.UnityUtil
+namespace Wshrzzz.UnityUtils
 {
     /// <summary>
     /// Print the log on Unity GUI.

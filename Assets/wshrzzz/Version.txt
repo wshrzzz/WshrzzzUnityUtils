@@ -2,13 +2,45 @@
 //
 //								WshrzzzUnityUtils
 //								
-//							      Ver 1.2.11241
+//							      Ver 1.3.717
 //
 /////////////////////////////////////////////////////////////////////////////////////
 
-Features:
-	1.2.11241 - Rename some variable and some static variable. Fixed bug: TimeBasic continues from a pause state will be reset incorrectly.
+Change notes:
+	1.3.717
+	Add GUIPasswordField class
+	Add GUITextArea class
+	Add GUIBaseText class
 
-	1.2.10311 - Add ConsoleBasic class.
+	1.3.617
+	GUI:
+	Add GUIBaseSlider class
+	Add GUIHorizontalSlider class
+	Add GUIVerticalSlider class
+	Add GUIScrollView class
+	Add GUIToggle class
+	Add GUIWindow class
+	Add GUIEventArgs class
+	Set DrawingRect been protected in GUIBase
+	Set UpdateRect() been private in GUIBase
+	Add UpdatePosAndSize to GUIBase
+	Add child coordinate system to GUIBase
 
-	1.1.10211 - PlayerPrefsAdjuster.ChangeSetting() add description parameter.
+	1.3.516
+	GUI:
+	Add GUIBase class
+	Add GUIBox class
+	Add GUIButton class
+	Add GUIImage class
+	Add GUILabel class
+	Add GUITextField class
+
+	1.2.11241
+	Rename some variable and some static variable
+	Fixed bug: TimeBasic continues from a pause state will be reset incorrectly.
+
+	1.2.10311
+	Add ConsoleBasic class.
+
+	1.1.10211
+	PlayerPrefsAdjuster.ChangeSetting() add description parameter.

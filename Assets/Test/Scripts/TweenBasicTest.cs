@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Wshrzzz.UnityUtil;
+using Wshrzzz.UnityUtils;
 
 public class TweenBasicTest : MonoBehaviour
 {
