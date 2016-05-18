@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Wshrzzz.UnityUtil
+namespace Wshrzzz.UnityUtils
 {
     /// <summary>
     /// Set PlayerPrefs and get info display on GUI with PlayerPrefsAdjuster.

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Wshrzzz.UnityUtil
+namespace Wshrzzz.UnityUtils
 {
     public class TimerBasic : MonoBehaviour
     {
