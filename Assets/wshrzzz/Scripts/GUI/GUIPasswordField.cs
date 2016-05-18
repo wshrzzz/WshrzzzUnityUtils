@@ -38,7 +38,7 @@ namespace Wshrzzz.UnityUtils
             MaskChar = Default_Mask_Char;
         }
 
-        public void Draw()
+        public void GUIDraw()
         {
             UniqueDraw(() =>
             {

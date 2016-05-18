@@ -67,7 +67,7 @@ namespace Wshrzzz.UnityUtils
             UpdateContentRect();
         }
 
-        public void Draw()
+        public void GUIDraw()
         {
             DrawingRect = GUI.Window(ID, DrawingRect, (id) =>
             {
@@ -75,7 +75,7 @@ namespace Wshrzzz.UnityUtils
                     {
 
                     }, m_ContentRect);
-                GUI.DragWindow();
+                if (m_Draggable) GUI.DragWindow();
             }, Content);
         }
 

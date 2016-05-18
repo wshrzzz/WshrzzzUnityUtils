@@ -54,7 +54,7 @@ namespace Wshrzzz.UnityUtils
             m_LastToggle = m_ToggleValue;
         }
 
-        public void Draw()
+        public void GUIDraw()
         {
             UniqueDraw(() =>
             {

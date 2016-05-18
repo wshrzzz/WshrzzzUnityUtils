@@ -33,7 +33,7 @@ namespace Wshrzzz.UnityUtils
             m_LastText = base.Text;
         }
 
-        public void Draw()
+        public void GUIDraw()
         {
             UniqueDraw(() =>
             {

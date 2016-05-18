@@ -21,7 +21,7 @@ namespace Wshrzzz.UnityUtils
             this.Image = image;
         }
 
-        public void Draw()
+        public void GUIDraw()
         {
             UniqueDraw(() =>
             {
