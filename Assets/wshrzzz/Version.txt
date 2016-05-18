@@ -2,11 +2,14 @@
 //
 //								WshrzzzUnityUtils
 //								
-//							      Ver 1.3.818
+//							      Ver 1.4.918
 //
 /////////////////////////////////////////////////////////////////////////////////////
 
 Change notes:
+	1.4.918
+	Restruct GUILogDisplay with gui base utils
+
 	1.3.818
 	Add Enable property to GUIBase
 	Fixed GUIWindow drag bug
