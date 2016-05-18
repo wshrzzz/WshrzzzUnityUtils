@@ -5,6 +5,6 @@ namespace Wshrzzz.UnityUtils
 {
     public interface IGUIDrawable
     {
-        void Draw();
+        void GUIDraw();
     } 
 }

@@ -15,7 +15,7 @@ namespace Wshrzzz.UnityUtils
         {
         }
 
-        public void Draw()
+        public void GUIDraw()
         {
             UniqueDraw(() =>
             {

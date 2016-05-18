@@ -8,6 +8,7 @@ namespace Wshrzzz.UnityUtils
     {
         private static int s_AllocID = 0;
 
+        public bool Enable { get; set; }
         public string Name { get; set; }
         public int ID { get; private set; }
 
@@ -119,6 +120,7 @@ namespace Wshrzzz.UnityUtils
 
         private void Init(Vector2 position, Vector2 size, PivotType pivot)
         {
+            this.Enable = true;
             this.Name = "";
             this.ID = GenID();
 
@@ -208,6 +210,14 @@ namespace Wshrzzz.UnityUtils
             m_Size = new Vector2(m_DrawingRect.width, m_DrawingRect.height);
         }
 
+        public void Draw()
+        {
+            if (this is IGUIDrawable && Enable)
+            {
+                (this as IGUIDrawable).GUIDraw();
+            }
+        }
+
         protected void UniqueDraw(Action drawHandler)
         {
             if (drawHandler == null)
@@ -246,8 +256,7 @@ namespace Wshrzzz.UnityUtils
                 {
                     foreach (var child in m_Children)
                     {
-                        if (child is IGUIDrawable)
-                            (child as IGUIDrawable).Draw();
+                        child.Draw();
                     }
                 }
                 catch (InvalidOperationException)

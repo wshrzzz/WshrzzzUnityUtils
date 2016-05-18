@@ -44,13 +44,13 @@ namespace Wshrzzz.UnityUtils
             ContentSize = Default_Content_Size;
         }
 
-        public void Draw()
+        public void GUIDraw()
         {
             m_ScrollPosition = GUI.BeginScrollView(DrawingRect, m_ScrollPosition, m_ContentRect);
             UniqueDraw(() =>
             {
 
-            });
+            }, m_ContentRect);
             GUI.EndScrollView();
         }
     } 
