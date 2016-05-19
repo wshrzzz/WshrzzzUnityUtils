@@ -5,10 +5,6 @@ using System;
 
 namespace Wshrzzz.UnityUtils
 {
-    /// <summary>
-    /// Print the log on Unity GUI.
-    /// It can be used sometimes where can't easily see system log.
-    /// </summary>
     public class GUILogDisplay : MonoBehaviour
     {
         private static readonly Color Transparent_Color = new Color(0f, 0f, 0f, 0f);
@@ -24,22 +20,25 @@ namespace Wshrzzz.UnityUtils
         private static readonly Vector2 Log_Panel_Position = new Vector2(20f, 55f);
         private static readonly Vector2 Log_Panel_Size = new Vector2(Debug_Window_Show_Size.x - 40f, Debug_Window_Show_Size.y - 45f - Control_Bar_Size.y);
 
+        private static readonly bool Default_Show_Log = true;
+        private static readonly bool Default_Auto_Scroll = true;
+
+        public bool ShowWindow = true;
+
         private GUIWindow m_DebugWindow;
         private ControlBar m_ControlBar;
         private LogPanel m_LogPanel;
 
-        public bool ShowLog = true;
+        private bool m_ShowLog = Default_Show_Log;
         
-        private static GUILogDisplay Instance { get; set; }
-        private static bool isWork = false;
+        private static GUILogDisplay s_Instance { get; set; }
 
         #region init
         void Awake()
         {
-            if (Instance == null)
+            if (s_Instance == null)
             {
-                Instance = this;
-                isWork = true;
+                s_Instance = this;
             }
             else
             {
@@ -50,8 +49,8 @@ namespace Wshrzzz.UnityUtils
 
         void Start()
         {
-            CheeterConsole.AddCheeter("showmydebug", () => { ShowLog = true; });
-            CheeterConsole.AddCheeter("hidemydebug", () => { ShowLog = false; });
+            CheatInput.AddCheater("showdebug", () => { ShowWindow = true; });
+            CheatInput.AddCheater("hidedebug", () => { ShowWindow = false; });
         }
 
         private void Init()
@@ -64,14 +63,16 @@ namespace Wshrzzz.UnityUtils
             m_ControlBar.Parent = m_DebugWindow;
             m_ControlBar.Pivot = PivotType.LeftTop;
             m_ControlBar.Position = Control_Bar_Position;
+            m_ControlBar.ShowLog = m_ShowLog;
+            m_ControlBar.AutoScroll = Default_Auto_Scroll;
 
             m_LogPanel = new LogPanel(Log_Panel_Size);
             m_LogPanel.Parent = m_DebugWindow;
             m_LogPanel.Pivot = PivotType.LeftTop;
             m_LogPanel.Position = Log_Panel_Position;
-            m_LogPanel.AutoScroll = true;
+            m_LogPanel.AutoScroll = m_ControlBar.AutoScroll;
 
-            m_ControlBar.ShowLogToggledEvent += (s, e) => { ShowLog = e.ToggleValue; };
+            m_ControlBar.ShowLogToggledEvent += (s, e) => { m_ShowLog = e.ToggleValue; };
             m_ControlBar.AutoScrollToggledEvent += (s, e) => { m_LogPanel.AutoScroll = e.ToggleValue; };
             m_ControlBar.ClearLogClickedEvent += (s, e) => { m_LogPanel.ClearLog(); };
         } 
@@ -79,12 +80,14 @@ namespace Wshrzzz.UnityUtils
 
         void OnGUI()
         {
+            if (!ShowWindow)
+                return;
             DrawDebugWindow();
         }
 
         private void DrawDebugWindow()
         {
-            m_DebugWindow.Size = Vector2.Lerp(m_DebugWindow.Size, ShowLog ? Debug_Window_Show_Size : Debug_Window_Hide_Size, 0.1f);
+            m_DebugWindow.Size = Vector2.Lerp(m_DebugWindow.Size, m_ShowLog ? Debug_Window_Show_Size : Debug_Window_Hide_Size, 0.1f);
             m_DebugWindow.Draw();
         }
         
@@ -92,8 +95,8 @@ namespace Wshrzzz.UnityUtils
         private class ControlBar
         {
             private static readonly float Left_Block_Width = 200f;
-            private static readonly string Show_Debug_Toggle_Text = "Show Log";
-            private static readonly float Show_Debug_Toggle_Width = 80f;
+            private static readonly string Show_Log_Toggle_Text = "Show Log";
+            private static readonly float Show_Log_Toggle_Width = 80f;
             private static readonly string Auto_Scroll_Toggle_Text = "Auto Scroll";
             private static readonly float Auto_Scroll_Toggle_Width = 100f;
             private static readonly string Clear_Log_Button_Text = "Clear Log";
@@ -155,6 +158,29 @@ namespace Wshrzzz.UnityUtils
                 }
             }
 
+            public bool ShowLog
+            {
+                get
+                {
+                    return m_ShowDebugToggle.ToggleValue;
+                }
+                set
+                {
+                    m_ShowDebugToggle.ToggleValue = value;
+                }
+            }
+            public bool AutoScroll
+            {
+                get
+                {
+                    return m_AutoScrollToggle.ToggleValue;
+                }
+                set
+                {
+                    m_AutoScrollToggle.ToggleValue = value;
+                }
+            }
+
             public ControlBar(float width, float height)
             {
                 Init(new Vector2(width, height));
@@ -178,11 +204,11 @@ namespace Wshrzzz.UnityUtils
                 m_ControlBarLeftBlock.Size = new Vector2(Left_Block_Width, m_ControlBarLeftBlock.Parent.Size.y);
                 m_ControlBarLeftBlock.Color = Transparent_Color;
 
-                m_ShowDebugToggle = new GUIToggle(Show_Debug_Toggle_Text);
+                m_ShowDebugToggle = new GUIToggle(Show_Log_Toggle_Text);
                 m_ShowDebugToggle.Parent = m_ControlBarLeftBlock;
                 m_ShowDebugToggle.Pivot = PivotType.LeftMiddle;
                 m_ShowDebugToggle.Position = new Vector2(0f, m_ShowDebugToggle.Parent.Size.y * 0.5f);
-                m_ShowDebugToggle.Size = new Vector2(Show_Debug_Toggle_Width, m_ShowDebugToggle.Parent.Size.y);
+                m_ShowDebugToggle.Size = new Vector2(Show_Log_Toggle_Width, m_ShowDebugToggle.Parent.Size.y);
                 m_ShowDebugToggle.ToggleValue = true;
                 m_ShowDebugToggle.ToggledEvent += (s, e) => { if (ShowLogToggledEvent != null) ShowLogToggledEvent(s, e); };
 
@@ -418,31 +444,40 @@ namespace Wshrzzz.UnityUtils
 
         public static void Log(object log)
         {
-            string logStr = log.ToString();
-            Debug.Log(logStr);
-            if (isWork)
-            {
-                Instance.m_LogPanel.AddLog(LogType.Log, logStr);
-            }
+            InternalLog(LogType.Log, log);
         }
 
         public static void LogWarning(object log)
         {
-            string logStr = log.ToString();
-            Debug.LogWarning(logStr);
-            if (isWork)
-            {
-                Instance.m_LogPanel.AddLog(LogType.LogWarning, logStr);
-            }
+            InternalLog(LogType.LogWarning, log);
         }
 
         public static void LogError(object log)
         {
+            InternalLog(LogType.LogError, log);
+        }
+
+        private static void InternalLog(LogType type, object log)
+        {
             string logStr = log.ToString();
-            Debug.LogError(logStr);
-            if (isWork)
+            switch (type)
             {
-                Instance.m_LogPanel.AddLog(LogType.LogError, logStr);
+                case LogType.Log:
+                    Debug.Log(logStr);
+                    break;
+                case LogType.LogWarning:
+                    Debug.LogWarning(logStr);
+                    break;
+                case LogType.LogError:
+                    Debug.LogError(logStr);
+                    break;
+                default:
+                    break;
+            }
+            
+            if (s_Instance != null)
+            {
+                s_Instance.m_LogPanel.AddLog(type, logStr);
             }
         }
     }
