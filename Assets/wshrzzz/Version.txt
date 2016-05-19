@@ -2,11 +2,16 @@
 //
 //								WshrzzzUnityUtils
 //								
-//							      Ver 1.4.918
+//							      Ver 1.5.1266
 //
 /////////////////////////////////////////////////////////////////////////////////////
 
 Change notes:
+	1.5.1266
+	Restruct CheaterConsole, to CheatInput base utils
+	Use Instance in GUILogDisplay
+	Fixed GUILogDisplay wrong log type bug
+
 	1.4.918
 	Restruct GUILogDisplay with gui base utils
 

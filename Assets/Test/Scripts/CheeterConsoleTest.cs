@@ -7,22 +7,17 @@ public class CheeterConsoleTest : MonoBehaviour
 	// Use this for initialization
 	void Start () {
 
-        CheeterConsole.AddCheeter("TestCheeter", () => { Debug.Log("TestCheeter is on. 1"); });
+        CheatInput.AddCheater("TestCheater", () => { Debug.Log("TestCheater is on. 1"); });
 
-        CheeterConsole.AddCheeter("TestCheeter", () => { Debug.Log("TestCheeter is on. 2"); });
+        CheatInput.AddCheater("TestCheater", () => { Debug.Log("TestCheater is on. 2"); });
 
-        CheeterConsole.AddCheeter("TestChee", () => { Debug.Log("TestChee is on."); });
+        CheatInput.AddCheater("TestChea", () => { Debug.Log("TestChea is on."); });
 
-        CheeterConsole.AddCheeter("TestCheeterBIGBIG", () => { Debug.Log("TestCheeterBIGBIG is on."); });
+        CheatInput.AddCheater("TestCheaterBIGBIG", () => { Debug.Log("TestCheaterBIGBIG is on."); });
 
-        CheeterConsole.AddCheeter("showmethemoney", () => { Debug.Log("showmethemoney is on."); });
+        CheatInput.AddCheater("showmethemoney", () => { Debug.Log("showmethemoney is on."); });
 
-        CheeterConsole.AddCheeter("whosyourdaddy", WhosYourDaddy);
-
-        CheeterConsole.AddCheeter("RemoveTest", () => { 
-            CheeterConsole.RemoveCheeter("TestCheeter"); 
-            CheeterConsole.RemoveCheeter("RemoveTest");
-        });
+        CheatInput.AddCheater("whosyourdaddy", WhosYourDaddy);
 	}
 
     void WhosYourDaddy()

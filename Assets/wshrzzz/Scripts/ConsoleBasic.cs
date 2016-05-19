@@ -15,7 +15,7 @@ namespace Wshrzzz.UnityUtils
 
         void Start()
         {
-            CheeterConsole.AddCheeter("openmyconsole", () => { m_ShowConsole = true; });
+            CheatInput.AddCheater("openmyconsole", () => { m_ShowConsole = true; });
 
             AddCommand("exit", (list) => { m_ShowConsole = false; });
         }
