@@ -3,7 +3,7 @@ using System;
 
 namespace Wshrzzz.UnityUtils
 {
-    public class GUIWindow : GUIBase, IGUIDrawable
+    public class GUIWindow : GUIBase
     {
         private static readonly Vector2 Default_Position = Vector2.zero;
         private static readonly Vector2 Default_Size = new Vector2(100f, 100f);
@@ -67,7 +67,7 @@ namespace Wshrzzz.UnityUtils
             UpdateContentRect();
         }
 
-        public void GUIDraw()
+        protected override void GUIDraw()
         {
             DrawingRect = GUI.Window(ID, DrawingRect, (id) =>
             {

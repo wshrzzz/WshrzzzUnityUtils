@@ -3,7 +3,7 @@ using System;
 
 namespace Wshrzzz.UnityUtils
 {
-    public class GUIImage : GUIBase, IGUIDrawable
+    public class GUIImage : GUIBase
     {
         private static readonly Vector2 Default_Position = Vector2.zero;
         private static readonly Vector2 Default_Size = new Vector2(100f, 100f);
@@ -21,7 +21,7 @@ namespace Wshrzzz.UnityUtils
             this.Image = image;
         }
 
-        public void GUIDraw()
+        protected override void GUIDraw()
         {
             UniqueDraw(() =>
             {

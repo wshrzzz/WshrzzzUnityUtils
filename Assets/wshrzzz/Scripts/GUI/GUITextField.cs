@@ -3,7 +3,7 @@ using System;
 
 namespace Wshrzzz.UnityUtils
 {
-    public class GUITextField : GUIBaseText, IGUIDrawable
+    public class GUITextField : GUIBaseText
     {
         public string Text
         {
@@ -33,7 +33,7 @@ namespace Wshrzzz.UnityUtils
             m_LastText = base.Text;
         }
 
-        public void GUIDraw()
+        protected override void GUIDraw()
         {
             UniqueDraw(() =>
             {
