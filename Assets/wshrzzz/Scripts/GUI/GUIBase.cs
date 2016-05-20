@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Wshrzzz.UnityUtils
 {
-    public abstract class GUIBase
+    public abstract class GUIBase : IGUIDrawable
     {
         private static int s_AllocID = 0;
 
@@ -212,10 +212,15 @@ namespace Wshrzzz.UnityUtils
 
         public void Draw()
         {
-            if (this is IGUIDrawable && Enable)
+            if (Enable)
             {
-                (this as IGUIDrawable).GUIDraw();
+                GUIDraw();
             }
+        }
+
+        protected virtual void GUIDraw()
+        {
+            UniqueDraw(() => { });
         }
 
         protected void UniqueDraw(Action drawHandler)

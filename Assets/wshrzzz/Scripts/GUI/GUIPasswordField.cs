@@ -3,7 +3,7 @@ using System;
 
 namespace Wshrzzz.UnityUtils
 {
-    public class GUIPasswordField : GUIBaseText, IGUIDrawable
+    public class GUIPasswordField : GUIBaseText
     {
         private static readonly char Default_Mask_Char = '*';
 
@@ -38,7 +38,7 @@ namespace Wshrzzz.UnityUtils
             MaskChar = Default_Mask_Char;
         }
 
-        public void GUIDraw()
+        protected override void GUIDraw()
         {
             UniqueDraw(() =>
             {
