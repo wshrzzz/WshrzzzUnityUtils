@@ -6,10 +6,6 @@ namespace Wshrzzz.UnityUtils
 {
     public abstract class GUIBase : IGUIDrawable
     {
-        protected static readonly Vector2 Default_Position = Vector2.zero;
-        protected static readonly Vector2 Default_Size = new Vector2(100f, 100f);
-        protected static readonly PivotType Default_Pivot = PivotType.LeftTop;
-
         private static int s_AllocID = 0;
 
         public bool Enable { get; set; }
