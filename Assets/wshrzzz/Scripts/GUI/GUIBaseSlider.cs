@@ -5,10 +5,6 @@ namespace Wshrzzz.UnityUtils
 {
     public abstract class GUIBaseSlider : GUIBase
     {
-        protected static readonly Vector2 Default_Position = Vector2.zero;
-        protected static readonly Vector2 Default_Size = new Vector2(100f, 100f);
-        protected static readonly PivotType Default_Pivot = PivotType.LeftTop;
-
         protected float m_LastValue;
         protected float m_Value;
         public float Value
@@ -25,7 +21,6 @@ namespace Wshrzzz.UnityUtils
         }
         
         public GUIBaseSlider()
-            : base(Default_Position, Default_Size, Default_Pivot)
         {
             m_LastValue = m_Value;
         }

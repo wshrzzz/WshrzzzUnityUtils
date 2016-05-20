@@ -2,11 +2,16 @@
 //
 //								WshrzzzUnityUtils
 //								
-//							      Ver 1.5.1387
+//							      Ver 1.5.1500
 //
 /////////////////////////////////////////////////////////////////////////////////////
 
 Change notes:
+	1.5.1500
+	Add Resize() in GUIBase
+	Remove default size in GUIBase
+	Use DebugWindow in GUILogDisplay
+
 	1.5.1387
 	Hide internal GUIDraw()
 

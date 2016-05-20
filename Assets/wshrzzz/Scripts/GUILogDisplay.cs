@@ -7,29 +7,11 @@ namespace Wshrzzz.UnityUtils
 {
     public class GUILogDisplay : MonoBehaviour
     {
-        private static readonly Color Transparent_Color = new Color(0f, 0f, 0f, 0f);
-
-        private static readonly string Debug_Window_Title = "DEBUG";
         private static readonly Vector2 Debug_Window_Position = new Vector2(0f, Screen.height * 0.5f);
         private static readonly Vector2 Debug_Window_Show_Size = new Vector2(Screen.width, Screen.height * 0.5f);
-        private static readonly Vector2 Debug_Window_Hide_Size = new Vector2(120, 55f);
-
-        private static readonly Vector2 Control_Bar_Position = new Vector2(20f, 20f);
-        private static readonly Vector2 Control_Bar_Size = new Vector2(Debug_Window_Show_Size.x - 40f, 30f);
-
-        private static readonly Vector2 Log_Panel_Position = new Vector2(20f, 55f);
-        private static readonly Vector2 Log_Panel_Size = new Vector2(Debug_Window_Show_Size.x - 40f, Debug_Window_Show_Size.y - 45f - Control_Bar_Size.y);
-
-        private static readonly bool Default_Show_Log = true;
-        private static readonly bool Default_Auto_Scroll = true;
 
         public bool ShowWindow = true;
-
-        private GUIWindow m_DebugWindow;
-        private ControlBar m_ControlBar;
-        private LogPanel m_LogPanel;
-
-        private bool m_ShowLog = Default_Show_Log;
+        private DebugWindow m_DebugWindow;
         
         private static GUILogDisplay s_Instance { get; set; }
 
@@ -44,56 +26,111 @@ namespace Wshrzzz.UnityUtils
             {
                 Destroy(this);
             }
-            Init();
+            m_DebugWindow = new DebugWindow();
+            m_DebugWindow.ShowWindow = ShowWindow;
+            m_DebugWindow.Pivot = PivotType.LeftTop;
+            m_DebugWindow.Position = Debug_Window_Position;
+            m_DebugWindow.Size = Debug_Window_Show_Size;
         }
 
         void Start()
         {
-            CheatInput.AddCheater("showdebug", () => { ShowWindow = true; });
-            CheatInput.AddCheater("hidedebug", () => { ShowWindow = false; });
+            CheatInput.AddCheater("showdebug", () => { m_DebugWindow.ShowWindow = true; });
+            CheatInput.AddCheater("hidedebug", () => { m_DebugWindow.ShowWindow = false; });
         }
-
-        private void Init()
-        {
-            m_DebugWindow = new GUIWindow(Debug_Window_Title);
-            m_DebugWindow.Position = Debug_Window_Position;
-            m_DebugWindow.Size = Debug_Window_Show_Size;
-
-            m_ControlBar = new ControlBar(Control_Bar_Size);
-            m_ControlBar.Parent = m_DebugWindow;
-            m_ControlBar.Pivot = PivotType.LeftTop;
-            m_ControlBar.Position = Control_Bar_Position;
-            m_ControlBar.ShowLog = m_ShowLog;
-            m_ControlBar.AutoScroll = Default_Auto_Scroll;
-
-            m_LogPanel = new LogPanel(Log_Panel_Size);
-            m_LogPanel.Parent = m_DebugWindow;
-            m_LogPanel.Pivot = PivotType.LeftTop;
-            m_LogPanel.Position = Log_Panel_Position;
-            m_LogPanel.AutoScroll = m_ControlBar.AutoScroll;
-
-            m_ControlBar.ShowLogToggledEvent += (s, e) => { m_ShowLog = e.ToggleValue; };
-            m_ControlBar.AutoScrollToggledEvent += (s, e) => { m_LogPanel.AutoScroll = e.ToggleValue; };
-            m_ControlBar.ClearLogClickedEvent += (s, e) => { m_LogPanel.ClearLog(); };
-        } 
         #endregion
-
+        void Update()
+        {
+            Log("asdf");
+        }
         void OnGUI()
         {
             if (!ShowWindow)
                 return;
-            DrawDebugWindow();
+            m_DebugWindow.Draw();
         }
 
-        private void DrawDebugWindow()
+        private class DebugWindow : GUIBase
         {
-            m_DebugWindow.Size = Vector2.Lerp(m_DebugWindow.Size, m_ShowLog ? Debug_Window_Show_Size : Debug_Window_Hide_Size, 0.1f);
-            m_DebugWindow.Draw();
+            private static readonly string Debug_Window_Title = "DEBUG";
+            private static readonly Vector2 Debug_Window_Hide_Size = new Vector2(120, 55f);
+
+            private static readonly Vector2 Control_Bar_Position = new Vector2(20f, 20f);
+            private static readonly float Control_Bar_Height = 30f;
+            private static readonly Vector2 Log_Panel_Position = new Vector2(20f, 55f);
+            private static float Sub_Control_Margin = 20f;
+            private static float Spacing_Distance = 5f;
+
+            private static float Show_Hide_Anim_Speed = 0.2f;
+
+            private static readonly bool Default_Show_Log = true;
+            private static readonly bool Default_Auto_Scroll = true;
+
+            public bool ShowWindow = true;
+
+            private GUIWindow m_DebugWindow;
+            private ControlBar m_ControlBar;
+            private LogPanel m_LogPanel;
+
+            private bool m_ShowLog = Default_Show_Log;
+            private Vector2 m_ShowSize;
+
+            public DebugWindow()
+            {
+                Init();
+            }
+
+            private void Init()
+            {
+                m_DebugWindow = new GUIWindow(Debug_Window_Title);
+                SetBaseControl(m_DebugWindow);
+
+                m_ControlBar = new ControlBar();
+                m_ControlBar.Parent = m_DebugWindow;
+                m_ControlBar.Pivot = PivotType.LeftTop;
+                m_ControlBar.ShowLog = m_ShowLog;
+                m_ControlBar.AutoScroll = Default_Auto_Scroll;
+
+                m_LogPanel = new LogPanel();
+                m_LogPanel.Parent = m_DebugWindow;
+                m_LogPanel.Pivot = PivotType.LeftTop;
+                m_LogPanel.AutoScroll = m_ControlBar.AutoScroll;
+
+                m_ControlBar.ShowLogToggledEvent += (s, e) => { m_ShowLog = e.ToggleValue; };
+                m_ControlBar.AutoScrollToggledEvent += (s, e) => { m_LogPanel.AutoScroll = e.ToggleValue; };
+                m_ControlBar.ClearLogClickedEvent += (s, e) => { m_LogPanel.ClearLog(); };
+
+                Resize();
+            }
+
+            protected override void Resize()
+            {
+                m_ShowSize = Size;
+                m_ControlBar.Position = Control_Bar_Position;
+                m_ControlBar.Size = new Vector2(m_ShowSize.x - Sub_Control_Margin * 2, Control_Bar_Height);
+                m_LogPanel.Position = Log_Panel_Position;
+                m_LogPanel.Size = new Vector2(m_ShowSize.x - Sub_Control_Margin * 2, m_ShowSize.y - Sub_Control_Margin * 2 - Spacing_Distance - m_ControlBar.Size.y);
+            }
+
+            protected override void GUIDraw()
+            {
+                UniqueDraw(() =>
+                {
+                    m_DebugWindow.Size = Vector2.Lerp(m_DebugWindow.Size, m_ShowLog ? m_ShowSize : Debug_Window_Hide_Size, Show_Hide_Anim_Speed);
+                    m_DebugWindow.Draw();
+                });
+            }
+
+            public void AddLog(LogType type, string log)
+            {
+                m_LogPanel.AddLog(type, log);
+            }
         }
         
         #region control bar
-        private class ControlBar
+        private class ControlBar : GUIBase
         {
+            private static readonly Color Transparent_Color = new Color(0f, 0f, 0f, 0f);
             private static readonly float Left_Block_Width = 200f;
             private static readonly string Show_Log_Toggle_Text = "Show Log";
             private static readonly float Show_Log_Toggle_Width = 80f;
@@ -101,6 +138,7 @@ namespace Wshrzzz.UnityUtils
             private static readonly float Auto_Scroll_Toggle_Width = 100f;
             private static readonly string Clear_Log_Button_Text = "Clear Log";
             private static readonly float Clear_Log_Button_Width = 100f;
+            private static readonly float Clear_Log_Button_Height_Percent = 0.7f;
 
             public event EventHandler<ToggledEventArgs> ShowLogToggledEvent;
             public event EventHandler<ToggledEventArgs> AutoScrollToggledEvent;
@@ -112,51 +150,6 @@ namespace Wshrzzz.UnityUtils
             private GUIToggle m_AutoScrollToggle;
             private GUIBox m_ControlBarRightBlock;
             private GUIButton m_ClearLogButton;
-
-            public bool Enable
-            {
-                get
-                {
-                    return m_ControlBar.Enable;
-                }
-                set
-                {
-                    m_ControlBar.Enable = value;
-                }
-            }
-            public GUIBase Parent
-            {
-                get
-                {
-                    return m_ControlBar.Parent;
-                }
-                set
-                {
-                    m_ControlBar.Parent = value;
-                }
-            }
-            public Vector2 Position
-            {
-                get
-                {
-                    return m_ControlBar.Position;
-                }
-                set
-                {
-                    m_ControlBar.Position = value;
-                }
-            }
-            public PivotType Pivot
-            {
-                get
-                {
-                    return m_ControlBar.Pivot;
-                }
-                set
-                {
-                    m_ControlBar.Pivot = value;
-                }
-            }
 
             public bool ShowLog
             {
@@ -181,133 +174,93 @@ namespace Wshrzzz.UnityUtils
                 }
             }
 
-            public ControlBar(float width, float height)
+            public ControlBar()
             {
-                Init(new Vector2(width, height));
+                Init();
             }
 
-            public ControlBar(Vector2 size)
-            {
-                Init(size);
-            }
-
-            private void Init(Vector2 size)
+            private void Init()
             {
                 m_ControlBar = new GUIBox();
-                m_ControlBar.Size = size;
                 m_ControlBar.Color = Transparent_Color;
+                SetBaseControl(m_ControlBar);
 
                 m_ControlBarLeftBlock = new GUIBox();
                 m_ControlBarLeftBlock.Parent = m_ControlBar;
                 m_ControlBarLeftBlock.Pivot = PivotType.LeftMiddle;
-                m_ControlBarLeftBlock.Position = new Vector2(0f, m_ControlBarLeftBlock.Parent.Size.y * 0.5f);
-                m_ControlBarLeftBlock.Size = new Vector2(Left_Block_Width, m_ControlBarLeftBlock.Parent.Size.y);
                 m_ControlBarLeftBlock.Color = Transparent_Color;
 
                 m_ShowDebugToggle = new GUIToggle(Show_Log_Toggle_Text);
                 m_ShowDebugToggle.Parent = m_ControlBarLeftBlock;
                 m_ShowDebugToggle.Pivot = PivotType.LeftMiddle;
-                m_ShowDebugToggle.Position = new Vector2(0f, m_ShowDebugToggle.Parent.Size.y * 0.5f);
-                m_ShowDebugToggle.Size = new Vector2(Show_Log_Toggle_Width, m_ShowDebugToggle.Parent.Size.y);
                 m_ShowDebugToggle.ToggleValue = true;
                 m_ShowDebugToggle.ToggledEvent += (s, e) => { if (ShowLogToggledEvent != null) ShowLogToggledEvent(s, e); };
 
                 m_AutoScrollToggle = new GUIToggle(Auto_Scroll_Toggle_Text);
                 m_AutoScrollToggle.Parent = m_ControlBarLeftBlock;
                 m_AutoScrollToggle.Pivot = PivotType.RightMiddle;
-                m_AutoScrollToggle.Position = new Vector2(m_AutoScrollToggle.Parent.Size.x, m_AutoScrollToggle.Parent.Size.y * 0.5f);
-                m_AutoScrollToggle.Size = new Vector2(Auto_Scroll_Toggle_Width, m_AutoScrollToggle.Parent.Size.y);
                 m_AutoScrollToggle.ToggleValue = true;
                 m_AutoScrollToggle.ToggledEvent += (s, e) => { if (AutoScrollToggledEvent != null) AutoScrollToggledEvent(s, e); };
 
-                m_ClearLogButton = new GUIButton("Clear Log");
+                m_ClearLogButton = new GUIButton(Clear_Log_Button_Text);
                 m_ClearLogButton.Parent = m_ControlBar;
                 m_ClearLogButton.Pivot = PivotType.RightMiddle;
-                m_ClearLogButton.Position = new Vector2(m_ClearLogButton.Parent.Size.x, m_ClearLogButton.Parent.Size.y * 0.5f);
-                m_ClearLogButton.Size = new Vector2(Clear_Log_Button_Width, m_ClearLogButton.Parent.Size.y * 0.8f);
                 m_ClearLogButton.ButtonClickEvent += (s, e) => { if (ClearLogClickedEvent != null) ClearLogClickedEvent(s, e); };
+                
+                Resize();
+            }
+
+            protected override void Resize()
+            {
+                m_ControlBarLeftBlock.Position = new Vector2(0f, m_ControlBarLeftBlock.Parent.Size.y * 0.5f);
+                m_ControlBarLeftBlock.Size = new Vector2(Left_Block_Width, m_ControlBarLeftBlock.Parent.Size.y);
+                m_ShowDebugToggle.Position = new Vector2(0f, m_ShowDebugToggle.Parent.Size.y * 0.5f);
+                m_ShowDebugToggle.Size = new Vector2(Show_Log_Toggle_Width, m_ShowDebugToggle.Parent.Size.y);
+                m_AutoScrollToggle.Position = new Vector2(m_AutoScrollToggle.Parent.Size.x, m_AutoScrollToggle.Parent.Size.y * 0.5f);
+                m_AutoScrollToggle.Size = new Vector2(Auto_Scroll_Toggle_Width, m_AutoScrollToggle.Parent.Size.y);
+                m_ClearLogButton.Position = new Vector2(m_ClearLogButton.Parent.Size.x, m_ClearLogButton.Parent.Size.y * 0.5f);
+                m_ClearLogButton.Size = new Vector2(Clear_Log_Button_Width, m_ClearLogButton.Parent.Size.y * Clear_Log_Button_Height_Percent);
+            }
+
+            protected override void GUIDraw()
+            {
+                UniqueDraw(() =>
+                {
+                    m_ControlBar.Draw();
+                });
             }
         } 
         #endregion
 
         #region log panel
-        private class LogPanel
+        private class LogPanel : GUIBase
         {
             private static readonly float Log_Scroll_View_Right_Hold = 30f;
             private static readonly float Log_Scroll_View_Default_Content_Height = 20f;
             private static readonly float Log_Box_Default_Y_Offset = 10f;
             private static readonly float Log_Box_Left_Right_Margin = 20f;
             private static readonly float Log_Box_Spacing_Distance = 5f;
+            private static readonly float Log_Item_Pad_In = 10f;
 
             private GUIBox m_LogPanel;
             private GUIScrollView m_LogScrollView;
             private Vector2 m_Size;
 
-            public bool Enable
-            {
-                get
-                {
-                    return m_LogPanel.Enable;
-                }
-                set
-                {
-                    m_LogPanel.Enable = value;
-                }
-            }
-            public GUIBase Parent
-            {
-                get
-                {
-                    return m_LogPanel.Parent;
-                }
-                set
-                {
-                    m_LogPanel.Parent = value;
-                }
-            }
-            public PivotType Pivot
-            {
-                get
-                {
-                    return m_LogPanel.Pivot;
-                }
-                set
-                {
-                    m_LogPanel.Pivot = value;
-                }
-            }
-            public Vector2 Position
-            {
-                get
-                {
-                    return m_LogPanel.Position;
-                }
-                set
-                {
-                    m_LogPanel.Position = value;
-                }
-            }
             public bool AutoScroll { get; set; }
             
             private float m_LogBoxStartY;
 
-            public LogPanel(float width, float height)
+            public LogPanel()
             {
-                Init(new Vector2(width, height));
+                Init();
             }
 
-            public LogPanel(Vector2 size)
+            private void Init()
             {
-                Init(size);
-            }
-
-            private void Init(Vector2 size)
-            {
-                m_Size = size;
                 if (m_LogPanel == null)
                 {
                     m_LogPanel = new GUIBox();
-                    m_LogPanel.Size = size;
+                    SetBaseControl(m_LogPanel);
                 }
 
                 if (m_LogScrollView != null)
@@ -317,19 +270,34 @@ namespace Wshrzzz.UnityUtils
                 m_LogScrollView = new GUIScrollView();
                 m_LogScrollView.Parent = m_LogPanel;
                 m_LogScrollView.Pivot = PivotType.LeftTop;
+                
+                m_LogBoxStartY = Log_Box_Default_Y_Offset;
+
+                Resize();
+            }
+
+            protected override void Resize()
+            {
                 m_LogScrollView.Position = Vector2.zero;
                 m_LogScrollView.Size = m_LogScrollView.Parent.Size;
                 m_LogScrollView.ContentSize = new Vector2(m_LogScrollView.Size.x - Log_Scroll_View_Right_Hold, Log_Scroll_View_Default_Content_Height);
+            }
 
-                m_LogBoxStartY = Log_Box_Default_Y_Offset;
+            protected override void GUIDraw()
+            {
+                UniqueDraw(() =>
+                {
+                    m_LogPanel.Draw();
+                });
             }
 
             public void AddLog(LogType type, string logStr)
             {
-                LogBox logBox = new LogBox(type, logStr, m_LogScrollView.Size.x - Log_Box_Left_Right_Margin * 2);
+                LogBox logBox = new LogBox(type, logStr);
                 logBox.Parent = m_LogScrollView;
                 logBox.Pivot = PivotType.LeftTop;
-                logBox.Position = new Vector2(10f, m_LogBoxStartY);
+                logBox.Position = new Vector2(Log_Item_Pad_In, m_LogBoxStartY);
+                logBox.Size = new Vector2(m_LogScrollView.Size.x - Log_Box_Left_Right_Margin * 2, 0f);
 
                 float logBoxSizeYWithSpace = logBox.RealSize.y + Log_Box_Spacing_Distance;
                 m_LogBoxStartY += logBoxSizeYWithSpace;
@@ -339,76 +307,34 @@ namespace Wshrzzz.UnityUtils
 
             public void ClearLog()
             {
-                Init(m_Size);
+                Init();
             }
 
             #region log box
-            private class LogBox
+            private class LogBox : GUIBase
             {
                 private static readonly float Log_Font_Size = 15f;
                 private static readonly float Log_Font_Top_Bottom_Margin = 3f;
                 private static readonly float Log_Text_Left_Right_Margin = 5f;
 
-                public bool Enable
-                {
-                    get
-                    {
-                        return m_LogBox.Enable;
-                    }
-                    set
-                    {
-                        m_LogBox.Enable = value;
-                    }
-                }
                 public Vector2 RealSize { get; private set; }
-                public GUIBase Parent
-                {
-                    get
-                    {
-                        return m_LogBox.Parent;
-                    }
-                    set
-                    {
-                        m_LogBox.Parent = value;
-                    }
-                }
-                public Vector2 Position
-                {
-                    get
-                    {
-                        return m_LogBox.Position;
-                    }
-                    set
-                    {
-                        m_LogBox.Position = value;
-                    }
-                }
-                public PivotType Pivot
-                {
-                    get
-                    {
-                        return m_LogBox.Pivot;
-                    }
-                    set
-                    {
-                        m_LogBox.Pivot = value;
-                    }
-                }
+                private float m_Width;
+                private float m_Height;
+                private string m_Log;
 
                 private GUIButton m_LogBox;
+                private GUILabel m_LogLabel;
 
-                public LogBox(LogType type, string log, float width)
+                public LogBox(LogType type, string log)
                 {
-                    Init(type, log, width);
+                    Init(type, log);
                 }
 
-                private void Init(LogType type, string log, float width)
+                private void Init(LogType type, string log)
                 {
-                    float height = log.Split('\n').Length * Log_Font_Size + Log_Font_Top_Bottom_Margin * 2;
-                    RealSize = new Vector2(width, height);
+                    m_Log = log;
 
                     m_LogBox = new GUIButton();
-                    m_LogBox.Size = new Vector2(width, height);
                     switch (type)
                     {
                         case LogType.Log:
@@ -423,12 +349,31 @@ namespace Wshrzzz.UnityUtils
                         default:
                             break;
                     }
+                    SetBaseControl(m_LogBox);
 
-                    GUILabel logLabel = new GUILabel(log);
-                    logLabel.Parent = m_LogBox;
-                    logLabel.Pivot = PivotType.LeftTop;
-                    logLabel.Position = new Vector2(Log_Text_Left_Right_Margin, 0f);
-                    logLabel.Size = new Vector2(logLabel.Parent.Size.x - Log_Text_Left_Right_Margin * 2, logLabel.Parent.Size.y);
+                    m_LogLabel = new GUILabel(log);
+                    m_LogLabel.Parent = m_LogBox;
+                    m_LogLabel.Pivot = PivotType.LeftTop;
+
+                    Resize();
+                }
+
+                protected override void Resize()
+                {
+                    float height = m_Log.Split('\n').Length * Log_Font_Size + Log_Font_Top_Bottom_Margin * 2;
+                    RealSize = new Vector2(Size.x, height);
+
+                    m_LogBox.Size = RealSize;
+                    m_LogLabel.Position = new Vector2(Log_Text_Left_Right_Margin, 0f);
+                    m_LogLabel.Size = new Vector2(m_LogLabel.Parent.Size.x - Log_Text_Left_Right_Margin * 2, m_LogLabel.Parent.Size.y);
+                }
+
+                protected override void GUIDraw()
+                {
+                    UniqueDraw(() =>
+                    {
+                        m_LogBox.Draw();
+                    });
                 }
             } 
             #endregion
@@ -477,7 +422,7 @@ namespace Wshrzzz.UnityUtils
             
             if (s_Instance != null)
             {
-                s_Instance.m_LogPanel.AddLog(type, logStr);
+                s_Instance.m_DebugWindow.AddLog(type, logStr);
             }
         }
     }

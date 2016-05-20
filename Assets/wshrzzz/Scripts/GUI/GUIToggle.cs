@@ -5,10 +5,6 @@ namespace Wshrzzz.UnityUtils
 {
     public class GUIToggle : GUIBase
     {
-        private static readonly Vector2 Default_Position = Vector2.zero;
-        private static readonly Vector2 Default_Size = new Vector2(100f, 100f);
-        private static readonly PivotType Default_Pivot = PivotType.LeftTop;
-
         private bool m_LastToggle;
         private bool m_ToggleValue;
         public bool ToggleValue
@@ -27,27 +23,23 @@ namespace Wshrzzz.UnityUtils
         public event EventHandler<ToggledEventArgs> ToggledEvent;
 
         public GUIToggle()
-            : base(Default_Position, Default_Size, Default_Pivot)
         {
             m_LastToggle = m_ToggleValue;
         }
 
         public GUIToggle(string text)
-            : base(Default_Position, Default_Size, Default_Pivot)
         {
             this.Text = text;
             m_LastToggle = m_ToggleValue;
         }
 
         public GUIToggle(Texture image)
-            : base(Default_Position, Default_Size, Default_Pivot)
         {
             this.Image = image;
             m_LastToggle = m_ToggleValue;
         }
 
         public GUIToggle(string text, Texture image)
-            : base(Default_Position, Default_Size, Default_Pivot)
         {
             this.Text = text;
             this.Image = image;

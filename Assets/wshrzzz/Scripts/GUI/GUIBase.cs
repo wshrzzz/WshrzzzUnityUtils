@@ -6,22 +6,28 @@ namespace Wshrzzz.UnityUtils
 {
     public abstract class GUIBase : IGUIDrawable
     {
+        protected static readonly Vector2 Default_Position = Vector2.zero;
+        protected static readonly Vector2 Default_Size = new Vector2(100f, 100f);
+        protected static readonly PivotType Default_Pivot = PivotType.LeftTop;
+
         private static int s_AllocID = 0;
 
         public bool Enable { get; set; }
         public string Name { get; set; }
         public int ID { get; private set; }
 
+        private GUIBase m_BaseControl;
+
         private Vector2 m_Position;
         public Vector2 Position
         {
             get
             {
-                return m_Position;
+                return m_BaseControl.m_Position;
             }
             set
             {
-                m_Position = value;
+                m_BaseControl.m_Position = value;
                 UpdateRect();
             }
         }
@@ -30,12 +36,13 @@ namespace Wshrzzz.UnityUtils
         {
             get
             {
-                return m_Size;
+                return m_BaseControl.m_Size;
             }
             set
             {
-                m_Size = value;
+                m_BaseControl.m_Size = value;
                 UpdateRect();
+                Resize();
             }
         }
         private PivotType m_Pivot;
@@ -43,11 +50,11 @@ namespace Wshrzzz.UnityUtils
         {
             get
             {
-                return m_Pivot;
+                return m_BaseControl.m_Pivot;
             }
             set
             {
-                m_Pivot = value;
+                m_BaseControl.m_Pivot = value;
                 UpdateRect();
             }
         }
@@ -56,12 +63,13 @@ namespace Wshrzzz.UnityUtils
         {
             get
             {
-                return m_DrawingRect;
+                return m_BaseControl.m_DrawingRect;
             }
             set
             {
-                m_DrawingRect = value;
+                m_BaseControl.m_DrawingRect = value;
                 UpdatePosAndSize();
+                Resize();
             }
         }
 
@@ -70,22 +78,22 @@ namespace Wshrzzz.UnityUtils
         {
             get
             {
-                return Content.text;
+                return m_BaseControl.Content.text;
             }
             set
             {
-                Content.text = value;
+                m_BaseControl.Content.text = value;
             }
         }
         public Texture Image
         {
             get
             {
-                return Content.image;
+                return m_BaseControl.Content.image;
             }
             set
             {
-                Content.image = value;
+                m_BaseControl.Content.image = value;
             }
         }
 
@@ -96,38 +104,35 @@ namespace Wshrzzz.UnityUtils
         {
             get
             {
-                return m_Parent;
+                return m_BaseControl.m_Parent;
             }
             set
             {
-                if (m_Parent != null)
+                if (m_BaseControl.m_Parent != null)
                 {
-                    m_Parent.RemoveChild(this);
+                    m_BaseControl.m_Parent.RemoveChild(this);
                 }
                 if (value != null)
                 {
-                    m_Parent = value;
-                    m_Parent.AddChild(this);
+                    m_BaseControl.m_Parent = value;
+                    m_BaseControl.m_Parent.AddChild(this);
                 }
             }
         }
         private List<GUIBase> m_Children = new List<GUIBase>();
 
-        public GUIBase(Vector2 position, Vector2 size, PivotType pivot)
+        public GUIBase()
         {
-            Init(position, size, pivot);
+            Init();
         }
 
-        private void Init(Vector2 position, Vector2 size, PivotType pivot)
+        private void Init()
         {
             this.Enable = true;
             this.Name = "";
             this.ID = GenID();
 
-            this.m_Position = position;
-            this.m_Size = size;
-            this.m_Pivot = pivot;
-            UpdateRect();
+            this.m_BaseControl = this;
 
             Content = new GUIContent();
         }
@@ -135,6 +140,11 @@ namespace Wshrzzz.UnityUtils
         private static int GenID()
         {
             return s_AllocID++;
+        }
+
+        protected void SetBaseControl(GUIBase control)
+        {
+            m_BaseControl = control;
         }
 
         private void UpdateRect()
@@ -208,6 +218,11 @@ namespace Wshrzzz.UnityUtils
                     break;
             }
             m_Size = new Vector2(m_DrawingRect.width, m_DrawingRect.height);
+        }
+
+        protected virtual void Resize()
+        {
+
         }
 
         public void Draw()

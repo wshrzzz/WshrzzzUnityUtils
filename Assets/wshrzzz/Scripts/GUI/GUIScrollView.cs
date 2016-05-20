@@ -5,9 +5,6 @@ namespace Wshrzzz.UnityUtils
 {
     public class GUIScrollView : GUIBase
     {
-        private static readonly Vector2 Default_Position = Vector2.zero;
-        private static readonly Vector2 Default_Size = new Vector2(100f, 100f);
-        private static readonly PivotType Default_Pivot = PivotType.LeftTop;
         private static readonly Vector2 Default_Content_Size = new Vector2(100f, 100f);
 
         private Vector2 m_LastPosition;
@@ -38,7 +35,6 @@ namespace Wshrzzz.UnityUtils
         }
 
         public GUIScrollView()
-            : base(Default_Position, Default_Size, Default_Pivot)
         {
             m_LastPosition = m_ScrollPosition;
             ContentSize = Default_Content_Size;
