@@ -2,11 +2,14 @@
 //
 //								WshrzzzUnityUtils
 //								
-//							      Ver 1.5.1266
+//							      Ver 1.5.1387
 //
 /////////////////////////////////////////////////////////////////////////////////////
 
 Change notes:
+	1.5.1387
+	Hide internal GUIDraw()
+
 	1.5.1266
 	Restruct CheaterConsole, to CheatInput base utils
 	Use Instance in GUILogDisplay

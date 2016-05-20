@@ -3,7 +3,7 @@ using System;
 
 namespace Wshrzzz.UnityUtils
 {
-    public class GUIScrollView : GUIBase, IGUIDrawable
+    public class GUIScrollView : GUIBase
     {
         private static readonly Vector2 Default_Position = Vector2.zero;
         private static readonly Vector2 Default_Size = new Vector2(100f, 100f);
@@ -44,7 +44,7 @@ namespace Wshrzzz.UnityUtils
             ContentSize = Default_Content_Size;
         }
 
-        public void GUIDraw()
+        protected override void GUIDraw()
         {
             m_ScrollPosition = GUI.BeginScrollView(DrawingRect, m_ScrollPosition, m_ContentRect);
             UniqueDraw(() =>

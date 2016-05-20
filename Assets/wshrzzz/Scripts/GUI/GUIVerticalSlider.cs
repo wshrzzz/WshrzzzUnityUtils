@@ -3,7 +3,7 @@ using System;
 
 namespace Wshrzzz.UnityUtils
 {
-    public class GUIVerticalSlider : GUIBaseSlider, IGUIDrawable
+    public class GUIVerticalSlider : GUIBaseSlider
     {
         public float TopValue { get; set; }
         public float BottomValue { get; set; }
@@ -15,7 +15,7 @@ namespace Wshrzzz.UnityUtils
         {
         }
 
-        public void GUIDraw()
+        protected override void GUIDraw()
         {
             UniqueDraw(() =>
             {
