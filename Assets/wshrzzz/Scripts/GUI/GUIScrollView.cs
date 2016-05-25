@@ -21,33 +21,27 @@ namespace Wshrzzz.UnityUtils
                 m_LastPosition = value;
             }
         }
-        private Rect m_ContentRect;
-        public Vector2 ContentSize
-        {
-            get
-            {
-                return new Vector2(m_ContentRect.width, m_ContentRect.height);
-            }
-            set
-            {
-                m_ContentRect = new Rect(0f, 0f, value.x, value.y);
-            }
-        }
-
+        
         public GUIScrollView()
         {
             m_LastPosition = m_ScrollPosition;
-            ContentSize = Default_Content_Size;
         }
 
         protected override void GUIDraw()
         {
-            m_ScrollPosition = GUI.BeginScrollView(DrawingRect, m_ScrollPosition, m_ContentRect);
+            m_ScrollPosition = GUI.BeginScrollView(DrawingRect, m_ScrollPosition, ContentDrawingRect);
             UniqueDraw(() =>
             {
 
-            }, m_ContentRect);
+            }, ContentDrawingRect);
             GUI.EndScrollView();
         }
+
+        //protected override void Resize()
+        //{
+        //    base.Resize();
+        //    //ContentDrawingRect = m_ContentRect;
+        //    Debug.Log(ContentDrawingRect);
+        //}
     } 
 }

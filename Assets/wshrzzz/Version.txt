@@ -2,11 +2,14 @@
 //
 //								WshrzzzUnityUtils
 //								
-//							      Ver 1.5.1500
+//							      Ver 1.5.1655
 //
 /////////////////////////////////////////////////////////////////////////////////////
 
 Change notes:
+	1.5.1655
+	Add padding and margin in GUIBase
+
 	1.5.1500
 	Add Resize() in GUIBase
 	Remove default size in GUIBase
