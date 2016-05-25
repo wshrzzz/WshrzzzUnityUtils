@@ -27,17 +27,17 @@ namespace Wshrzzz.UnityUtils
                 Destroy(this);
             }
             m_DebugWindow = new DebugWindow();
-            m_DebugWindow.ShowWindow = ShowWindow;
+            m_DebugWindow.ShowLog = ShowWindow;
             m_DebugWindow.Pivot = PivotType.LeftTop;
             m_DebugWindow.Position = Debug_Window_Position;
             m_DebugWindow.PaddingAll = 20f;
-            m_DebugWindow.Size = Debug_Window_Show_Size;
+            m_DebugWindow.ShowSize = Debug_Window_Show_Size;
         }
 
         void Start()
         {
-            CheatInput.AddCheater("showdebug", () => { m_DebugWindow.ShowWindow = true; });
-            CheatInput.AddCheater("hidedebug", () => { m_DebugWindow.ShowWindow = false; });
+            CheatInput.AddCheater("showdebug", () => { ShowWindow = true; });
+            CheatInput.AddCheater("hidedebug", () => { ShowWindow = false; });
         }
         #endregion
         void Update()
@@ -57,7 +57,7 @@ namespace Wshrzzz.UnityUtils
         private class DebugWindow : GUIWindow
         {
             private static readonly string Debug_Window_Title = "DEBUG";
-            private static readonly Vector2 Debug_Window_Hide_Size = new Vector2(120, 55f);
+            private static readonly Vector2 Debug_Window_Hide_Size = new Vector2(120f, 60f);
 
             private static readonly Vector2 Control_Bar_Position = new Vector2(20f, 20f);
             private static readonly float Control_Bar_Height = 20f;
@@ -70,24 +70,23 @@ namespace Wshrzzz.UnityUtils
             private static readonly bool Default_Show_Log = true;
             private static readonly bool Default_Auto_Scroll = true;
 
-            public bool ShowWindow = true;
+            public bool ShowLog = true;
 
             private ControlBar m_ControlBar;
             private LogPanel m_LogPanel;
 
             private bool m_ShowLog = Default_Show_Log;
             private Vector2 m_ShowSize;
-
-            public Vector2 Size
+            public Vector2 ShowSize
             {
                 get
                 {
-                    return base.Size;
+                    return m_ShowSize;
                 }
                 set
                 {
-                    base.Size = value;
-                    m_ShowSize = base.Size;
+                    m_ShowSize = value;
+                    Size = value;
                 }
             }
 
@@ -113,16 +112,16 @@ namespace Wshrzzz.UnityUtils
                 m_LogPanel.MarginTop = 35f;
                 m_LogPanel.AutoScroll = m_ControlBar.AutoScroll;
 
-                m_ControlBar.ShowLogToggledEvent += (s, e) => { m_ShowLog = e.ToggleValue; };
+                m_ControlBar.ShowLogToggledEvent += (s, e) => { m_ShowLog = e.ToggleValue; m_LogPanel.Enable = e.ToggleValue; };
                 m_ControlBar.AutoScrollToggledEvent += (s, e) => { m_LogPanel.AutoScroll = e.ToggleValue; };
                 m_ControlBar.ClearLogClickedEvent += (s, e) => { m_LogPanel.ClearLog(); };
             }
 
             protected override void GUIDraw()
             {
-                if (Vector2.Distance(m_ShowLog ? m_ShowSize : Debug_Window_Hide_Size, Size) > 1f)
+                if (Vector2.Distance(m_ShowLog ? m_ShowSize : Debug_Window_Hide_Size, DrawingRect.size) > 1f)
                 {
-                    Size = Vector2.Lerp(Size, m_ShowLog ? m_ShowSize : Debug_Window_Hide_Size, Show_Hide_Anim_Speed);
+                    Size = Vector2.Lerp(DrawingRect.size, m_ShowLog ? m_ShowSize : Debug_Window_Hide_Size, Show_Hide_Anim_Speed);
                 }
                 base.GUIDraw();
             }
@@ -201,21 +200,22 @@ namespace Wshrzzz.UnityUtils
                 m_ShowDebugToggle.Margin = MarginType.Left | MarginType.FixedWidth;
                 m_ShowDebugToggle.Size = new Vector2(Show_Log_Toggle_Width, 0f);
                 m_ShowDebugToggle.ToggleValue = true;
-                m_ShowDebugToggle.ToggledEvent += (s, e) => { if (ShowLogToggledEvent != null) ShowLogToggledEvent(s, e); };
-
+                
                 m_AutoScrollToggle = new GUIToggle(Auto_Scroll_Toggle_Text);
                 m_AutoScrollToggle.Parent = m_ControlBarLeftBlock;
                 m_AutoScrollToggle.Location = LocationType.Relative;
                 m_AutoScrollToggle.Margin = MarginType.Right | MarginType.FixedWidth;
                 m_AutoScrollToggle.Size = new Vector2(Auto_Scroll_Toggle_Width, 0f);
                 m_AutoScrollToggle.ToggleValue = true;
-                m_AutoScrollToggle.ToggledEvent += (s, e) => { if (AutoScrollToggledEvent != null) AutoScrollToggledEvent(s, e); };
-
+                
                 m_ClearLogButton = new GUIButton(Clear_Log_Button_Text);
                 m_ClearLogButton.Parent = this;
                 m_ClearLogButton.Location = LocationType.Relative;
                 m_ClearLogButton.Margin = MarginType.Right | MarginType.FixedWidth | MarginType.FixedHeight;
                 m_ClearLogButton.Size = new Vector2(Clear_Log_Button_Width, Clear_Log_Button_Height);
+
+                m_ShowDebugToggle.ToggledEvent += (s, e) => { if (ShowLogToggledEvent != null) ShowLogToggledEvent(s, e); m_AutoScrollToggle.Enable = e.ToggleValue; m_ClearLogButton.Enable = e.ToggleValue; };
+                m_AutoScrollToggle.ToggledEvent += (s, e) => { if (AutoScrollToggledEvent != null) AutoScrollToggledEvent(s, e); };
                 m_ClearLogButton.ButtonClickEvent += (s, e) => { if (ClearLogClickedEvent != null) ClearLogClickedEvent(s, e); };
             }
 
@@ -250,10 +250,7 @@ namespace Wshrzzz.UnityUtils
             {
                 m_LogBoxStartY = Log_Scroll_View_Content_Top_Bottom_Margin;
 
-                if (m_Box != null)
-                {
-                    m_Box.Parent = null;
-                }
+                DetachAllChildren();
                 m_Box = new GUIBox();
                 m_Box.Parent = this;
                 m_Box.Location = LocationType.Relative;

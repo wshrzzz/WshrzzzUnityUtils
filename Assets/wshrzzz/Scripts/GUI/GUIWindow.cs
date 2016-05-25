@@ -13,7 +13,7 @@ namespace Wshrzzz.UnityUtils
         {
             this.Text = title;
             this.Draggable = true;
-            UpdateContentRect();
+            Resize();
         }
 
         protected override void GUIDraw()
@@ -28,23 +28,14 @@ namespace Wshrzzz.UnityUtils
             }, Content);
         }
 
-        private void UpdateContentRect()
-        {
-            float left = PaddingLeft;
-            float right = base.Size.x - PaddingRight;
-            float top = PaddingTop;
-            float bottom = base.Size.y - PaddingBottom;
-            m_ContentRect = new Rect(left, top, right - left, bottom - top);
-        }
-
         protected override void Resize()
         {
             base.Resize();
             float left = PaddingLeft;
-            float right = base.Size.x - PaddingRight;
+            float right = DrawingRect.size.x - PaddingRight;
             float top = PaddingTop;
-            float bottom = base.Size.y - PaddingBottom;
-            m_ContentRect = new Rect(left, top, right - left, bottom - top);
+            float bottom = DrawingRect.size.y - PaddingBottom;
+            m_ContentRect.Set(left, top, right - left, bottom - top);
         }
     } 
 }

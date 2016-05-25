@@ -11,7 +11,6 @@ namespace Wshrzzz.UnityUtils
         public event EventHandler<ScrolledEventArgs> ScrolledEvent;
 
         public GUIVerticalSlider()
-            : base()
         {
         }
 

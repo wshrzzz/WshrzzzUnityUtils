@@ -21,7 +21,7 @@ namespace Wshrzzz.UnityUtils
                 m_LastPosition = value;
             }
         }
-        
+
         public GUIScrollView()
         {
             m_LastPosition = m_ScrollPosition;
@@ -36,12 +36,5 @@ namespace Wshrzzz.UnityUtils
             }, ContentDrawingRect);
             GUI.EndScrollView();
         }
-
-        //protected override void Resize()
-        //{
-        //    base.Resize();
-        //    //ContentDrawingRect = m_ContentRect;
-        //    Debug.Log(ContentDrawingRect);
-        //}
     } 
 }

@@ -9,6 +9,9 @@ namespace Wshrzzz.UnityUtils
         private static int s_AllocID = 0;
         private static readonly Vector2 Screen_Size = new Vector2(Screen.width, Screen.height);
 
+        public delegate void HandleResizeDelegate();
+        public HandleResizeDelegate ResizeHandler;
+
         public bool Enable { get; set; }
         public string Name { get; set; }
         public int ID { get; private set; }
@@ -17,10 +20,6 @@ namespace Wshrzzz.UnityUtils
         private LocationType m_Location;
         public LocationType Location
         {
-            get
-            {
-                return m_Location;
-            }
             set
             {
                 m_Location = value;
@@ -30,10 +29,6 @@ namespace Wshrzzz.UnityUtils
         private MarginType m_Margin;
         public MarginType Margin
         {
-            get
-            {
-                return m_Margin;
-            }
             set
             {
                 m_Margin = value;
@@ -43,10 +38,6 @@ namespace Wshrzzz.UnityUtils
         private Vector2 m_Position;
         public Vector2 Position
         {
-            get
-            {
-                return m_Position;
-            }
             set
             {
                 m_Position = value;
@@ -56,10 +47,6 @@ namespace Wshrzzz.UnityUtils
         private Vector2 m_Size;
         public Vector2 Size
         {
-            get
-            {
-                return m_Size;
-            }
             set
             {
                 m_Size = value;
@@ -69,10 +56,6 @@ namespace Wshrzzz.UnityUtils
         private PivotType m_Pivot;
         public PivotType Pivot
         {
-            get
-            {
-                return m_Pivot;
-            }
             set
             {
                 m_Pivot = value;
@@ -255,6 +238,7 @@ namespace Wshrzzz.UnityUtils
             set
             {
                 m_DrawingRect = value;
+                UpdatePosAndSize();
             }
         }
         private Rect m_ContentDrawingRect;
@@ -320,7 +304,7 @@ namespace Wshrzzz.UnityUtils
             }
         }
         private List<GUIBase> m_Children = new List<GUIBase>();
-        private List<GUIBase> Children
+        protected List<GUIBase> Children
         {
             get
             {
@@ -349,7 +333,7 @@ namespace Wshrzzz.UnityUtils
 
         protected void UpdateRect()
         {
-            switch (Location)
+            switch (m_Location)
             {
                 case LocationType.Fixed:
                     UpdateRectWithFixed();
@@ -373,34 +357,34 @@ namespace Wshrzzz.UnityUtils
 
         private void UpdateRectWithFixed()
         {
-            switch (Pivot)
+            switch (m_Pivot)
             {
                 case PivotType.LeftTop:
-                    m_DrawingRect = new Rect(Position.x, Position.y, Size.x, Size.y);
+                    m_DrawingRect.Set(m_Position.x, m_Position.y, m_Size.x, m_Size.y);
                     break;
                 case PivotType.LeftMiddle:
-                    m_DrawingRect = new Rect(Position.x, Position.y - Size.y * 0.5f, Size.x, Size.y);
+                    m_DrawingRect.Set(m_Position.x, m_Position.y - m_Size.y * 0.5f, m_Size.x, m_Size.y);
                     break;
                 case PivotType.LeftBottom:
-                    m_DrawingRect = new Rect(Position.x, Position.y - Size.y, Size.x, Size.y);
+                    m_DrawingRect.Set(m_Position.x, m_Position.y - m_Size.y, m_Size.x, m_Size.y);
                     break;
                 case PivotType.MiddleTop:
-                    m_DrawingRect = new Rect(Position.x - Size.x * 0.5f, Position.y, Size.x, Size.y);
+                    m_DrawingRect.Set(m_Position.x - m_Size.x * 0.5f, m_Position.y, m_Size.x, m_Size.y);
                     break;
                 case PivotType.Center:
-                    m_DrawingRect = new Rect(Position.x - Size.x * 0.5f, Position.y - Size.y * 0.5f, Size.x, Size.y);
+                    m_DrawingRect.Set(m_Position.x - m_Size.x * 0.5f, m_Position.y - m_Size.y * 0.5f, m_Size.x, m_Size.y);
                     break;
                 case PivotType.MiddleBottom:
-                    m_DrawingRect = new Rect(Position.x - Size.x * 0.5f, Position.y - Size.y, Size.x, Size.y);
+                    m_DrawingRect.Set(m_Position.x - m_Size.x * 0.5f, m_Position.y - m_Size.y, m_Size.x, m_Size.y);
                     break;
                 case PivotType.RightTop:
-                    m_DrawingRect = new Rect(Position.x - Size.x, Position.y, Size.x, Size.y);
+                    m_DrawingRect.Set(m_Position.x - m_Size.x, m_Position.y, m_Size.x, m_Size.y);
                     break;
                 case PivotType.RightMiddle:
-                    m_DrawingRect = new Rect(Position.x - Size.x, Position.y - Size.y * 0.5f, Size.x, Size.y);
+                    m_DrawingRect.Set(m_Position.x - m_Size.x, m_Position.y - m_Size.y * 0.5f, m_Size.x, m_Size.y);
                     break;
                 case PivotType.RightBottom:
-                    m_DrawingRect = new Rect(Position.x - Size.x, Position.y - Size.y, Size.x, Size.y);
+                    m_DrawingRect.Set(m_Position.x - m_Size.x, m_Position.y - m_Size.y, m_Size.x, m_Size.y);
                     break;
                 default:
                     break;
@@ -451,8 +435,45 @@ namespace Wshrzzz.UnityUtils
                 }
             }
 
-            m_DrawingRect = new Rect(left, top, right - left, bottom - top);
+            m_DrawingRect.Set(left, top, right - left, bottom - top);
             m_Size = m_DrawingRect.size;
+        }
+
+        private void UpdatePosAndSize()
+        {
+            m_Size = m_DrawingRect.size;
+            switch (m_Pivot)
+            {
+                case PivotType.LeftTop:
+                    m_Position.Set(m_DrawingRect.xMin, m_DrawingRect.yMin);
+                    break;
+                case PivotType.LeftMiddle:
+                    m_Position.Set(m_DrawingRect.xMin, m_DrawingRect.y);
+                    break;
+                case PivotType.LeftBottom:
+                    m_Position.Set(m_DrawingRect.xMin, m_DrawingRect.yMax);
+                    break;
+                case PivotType.MiddleTop:
+                    m_Position.Set(m_DrawingRect.x, m_DrawingRect.yMin);
+                    break;
+                case PivotType.Center:
+                    m_Position.Set(m_DrawingRect.x, m_DrawingRect.y);
+                    break;
+                case PivotType.MiddleBottom:
+                    m_Position.Set(m_DrawingRect.x, m_DrawingRect.yMax);
+                    break;
+                case PivotType.RightTop:
+                    m_Position.Set(m_DrawingRect.xMax, m_DrawingRect.yMin);
+                    break;
+                case PivotType.RightMiddle:
+                    m_Position.Set(m_DrawingRect.xMax, m_DrawingRect.y);
+                    break;
+                case PivotType.RightBottom:
+                    m_Position.Set(m_DrawingRect.xMax, m_DrawingRect.yMax);
+                    break;
+                default:
+                    break;
+            }
         }
 
         private Vector2 GetParentSize()
@@ -473,17 +494,20 @@ namespace Wshrzzz.UnityUtils
             float right = m_DrawingRect.xMax - m_PaddingRight;
             float top = m_DrawingRect.yMin + m_PaddingTop;
             float bottom = m_DrawingRect.yMax - m_PaddingBottom;
-            m_ContentDrawingRect = new Rect(left, top, right - left, bottom - top);
+            m_ContentDrawingRect.Set(left, top, right - left, bottom - top);
         }
 
         private bool CheckMarginType(MarginType type)
         {
-            return ((int)Margin & (int)type) != 0;
+            return ((int)m_Margin & (int)type) != 0;
         }
 
         protected virtual void Resize()
         {
-
+            if (ResizeHandler != null)
+            {
+                ResizeHandler();
+            }
         }
 
         public void Draw()
@@ -562,6 +586,14 @@ namespace Wshrzzz.UnityUtils
             if (m_Children.Contains(child))
             {
                 m_Children.Remove(child);
+            }
+        }
+
+        public void DetachAllChildren()
+        {
+            while (m_Children.Count != 0)
+            {
+                m_Children[0].Parent = null;
             }
         }
     }
