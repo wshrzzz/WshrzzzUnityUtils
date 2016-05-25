@@ -11,6 +11,7 @@ namespace Wshrzzz.UnityUtils
 
         public delegate void HandleResizeDelegate();
         public HandleResizeDelegate ResizeHandler;
+        private static bool m_IsHandlingResize = false;
 
         public bool Enable { get; set; }
         public string Name { get; set; }
@@ -347,12 +348,15 @@ namespace Wshrzzz.UnityUtils
 
             UpdateContentRect();
 
-            Resize();
+            if (!m_IsHandlingResize)
+            {
+                Resize();
+            }
 
             foreach (var child in Children)
             {
                 child.UpdateRect();
-            }
+            } 
         }
 
         private void UpdateRectWithFixed()
@@ -502,12 +506,14 @@ namespace Wshrzzz.UnityUtils
             return ((int)m_Margin & (int)type) != 0;
         }
 
-        protected virtual void Resize()
+        private void Resize()
         {
+            m_IsHandlingResize = true;
             if (ResizeHandler != null)
             {
                 ResizeHandler();
             }
+            m_IsHandlingResize = false;
         }
 
         public void Draw()

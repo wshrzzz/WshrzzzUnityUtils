@@ -13,7 +13,14 @@ namespace Wshrzzz.UnityUtils
         {
             this.Text = title;
             this.Draggable = true;
-            Resize();
+            this.ResizeHandler += () =>
+            {
+                float left = PaddingLeft;
+                float right = DrawingRect.size.x - PaddingRight;
+                float top = PaddingTop;
+                float bottom = DrawingRect.size.y - PaddingBottom;
+                m_ContentRect.Set(left, top, right - left, bottom - top);
+            };
         }
 
         protected override void GUIDraw()
@@ -26,16 +33,6 @@ namespace Wshrzzz.UnityUtils
                     }, m_ContentRect);
                 if (Draggable) GUI.DragWindow();
             }, Content);
-        }
-
-        protected override void Resize()
-        {
-            base.Resize();
-            float left = PaddingLeft;
-            float right = DrawingRect.size.x - PaddingRight;
-            float top = PaddingTop;
-            float bottom = DrawingRect.size.y - PaddingBottom;
-            m_ContentRect.Set(left, top, right - left, bottom - top);
         }
     } 
 }

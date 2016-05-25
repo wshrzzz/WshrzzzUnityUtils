@@ -40,13 +40,7 @@ namespace Wshrzzz.UnityUtils
             CheatInput.AddCheater("hidedebug", () => { ShowWindow = false; });
         }
         #endregion
-        void Update()
-        {
-            if (Input.GetMouseButtonDown(1))
-            {
-                LogError("qwer");
-            }
-        }
+
         void OnGUI()
         {
             if (!ShowWindow)
@@ -243,6 +237,12 @@ namespace Wshrzzz.UnityUtils
 
             public LogPanel()
             {
+                this.ResizeHandler += () =>
+                {
+                    m_ContentRect = new Rect(0f, 0f, DrawingRect.width - Log_Scroll_View_Right_Hold, Mathf.Max((m_LogBoxStartY + Log_Scroll_View_Content_Top_Bottom_Margin), DrawingRect.height));
+                    ContentDrawingRect = m_ContentRect;
+                };
+
                 Init();
             }
 
@@ -256,14 +256,7 @@ namespace Wshrzzz.UnityUtils
                 m_Box.Location = LocationType.Relative;
                 m_Box.Margin = MarginType.Fit;
 
-                Resize();
-            }
-
-            protected override void Resize()
-            {
-                base.Resize();
-                m_ContentRect = new Rect(0f, 0f, DrawingRect.width - Log_Scroll_View_Right_Hold, Mathf.Max((m_LogBoxStartY + Log_Scroll_View_Content_Top_Bottom_Margin), DrawingRect.height));
-                ContentDrawingRect = m_ContentRect;
+                UpdateRect();
             }
 
             public void AddLog(LogType type, string logStr)
